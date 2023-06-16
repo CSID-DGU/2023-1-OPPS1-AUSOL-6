@@ -30,6 +30,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -256,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
     // ItemList에 저장된 식품정보 불러오기
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
+        results = results.sort("expire_date", Sort.ASCENDING);
+
 
         for(ItemList data : results){
 

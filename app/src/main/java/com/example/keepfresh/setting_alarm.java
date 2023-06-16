@@ -2,15 +2,22 @@ package com.example.keepfresh;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
 import android.widget.Button;
 
 //알람 설정 페이지
 public class setting_alarm extends AppCompatActivity {
 
+
     private Button btn_move;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,5 +33,6 @@ public class setting_alarm extends AppCompatActivity {
                 startActivity(intent); //액티비티 이동
             }
         });
+
     }
 }

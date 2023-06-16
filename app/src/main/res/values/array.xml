@@ -10,31 +10,66 @@
     </string-array>
     <!--유통기한 알람시각 설정-->
     <string-array name="알람시간">
-        <item>0시</item>
-        <item>1시</item>
-        <item>2시</item>
-        <item>3시</item>
-        <item>4시</item>
-        <item>5시</item>
-        <item>6시</item>
-        <item>7시</item>
-        <item>8시</item>
-        <item>9시</item>
-        <item>10시</item>
-        <item>11시</item>
-        <item>12시</item>
-        <item>13시</item>
-        <item>14시</item>
-        <item>15시</item>
-        <item>16시</item>
-        <item>17시</item>
-        <item>18시</item>
-        <item>19시</item>
-        <item>20시</item>
-        <item>21시</item>
-        <item>22시</item>
-        <item>23시</item>
+        <item>오전 12시</item>
+        <item>오전 1시</item>
+        <item>오전 2시</item>
+        <item>오전 3시</item>
+        <item>오전 4시</item>
+        <item>오전 5시</item>
+        <item>오전 6시</item>
+        <item>오전 7시</item>
+        <item>오전 8시</item>
+        <item>오전 9시</item>
+        <item>오전 10시</item>
+        <item>오전 11시</item>
+        <item>오후 12시</item>
+        <item>오후 1시</item>
+        <item>오후 2시</item>
+        <item>오후 3시</item>
+        <item>오후 4시</item>
+        <item>오후 5시</item>
+        <item>오후 6시</item>
+        <item>오후 7시</item>
+        <item>오후 8시</item>
+        <item>오후 9시</item>
+        <item>오후 10시</item>
+        <item>오후 11시</item>
     </string-array>
-
-
+    <string-array name="알람시간_value">
+        <item>00</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+    <!--유통기한 알림일자 설정-->
+    <string-array name="알람일자">
+        <item>1일 전</item>
+        <item>3일 전</item>
+        <item>7일 전</item>
+    </string-array>
+    <string-array name="알람일자_value">
+        <item>1day</item>
+        <item>3days</item>
+        <item>7days</item>
+    </string-array>
 </resources>
