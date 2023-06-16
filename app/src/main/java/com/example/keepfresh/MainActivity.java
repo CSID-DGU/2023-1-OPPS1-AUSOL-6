@@ -62,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); //액티비티 이동
             }
         });
+        btn_move =findViewById(R.id.button5);
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , setting_alarm.class);
+                startActivity(intent); //액티비티 이동
+            }
+        });
 /*
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
