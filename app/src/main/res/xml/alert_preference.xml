@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="유통기한 알림 설정">
-        <ListPreference>
-            android:entries="@array/"알람일자"
-            android:entryValues="@array/"알람일자"
-            android:key="alert_day"
-            android:summary="3일 전"
-            android:title="알림 전송 일자"
-        </ListPreference>
-
-        <ListPreference>
-            android:entries="@array/"알람시간"
-            android:entryValues="@array/"알람시간"
-            android:key="alert_time"
-            android:summary="오전 9시"
-            android:title="알림 전송 시각"
-        </ListPreference>
+    <ListPreference
+        android:title="알림일자 설정"
+        android:summary="유통기한 만료 몇일 전 알려줄지 설정합니다."
+        />
     </PreferenceCategory>
 </PreferenceScreen>
