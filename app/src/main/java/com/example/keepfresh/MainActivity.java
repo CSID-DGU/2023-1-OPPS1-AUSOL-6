@@ -96,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
 
 
-        /*************************************************
-        * TODO 모델로 인식할 클래스에 대한 addFood 작업 필요   *
-        ************************************************/
         if(!MyApplication.initExp){
             // .json파일의 정보를 읽어서 ExpList 테이블 생성
             parsingItemInfo();
@@ -233,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
         results = results.sort("expire_date", Sort.ASCENDING);
-
 
         for(ItemList data : results){
 
