@@ -1,38 +1,50 @@
 package com.example.keepfresh;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
+import android.preference.ListPreference;
+import android.preference.PreferenceFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import android.content.SharedPreferences;
-import android.os.Bundle;
-
-import android.widget.Button;
 
 //알람 설정 페이지
-public class setting_alarm extends AppCompatActivity {
+public class setting_alarm extends PreferenceFragment {
+    SharedPreferences prefs;
 
-
-    private Button btn_move;
-
+    ListPreference datePreference;
+    ListPreference timePreference;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting_alarm);
 
-        btn_move =findViewById(R.id.button12);
+        addPreferencesFromResource(R.xml.alert_preference);
+        datePreference = (ListPreference) findPreference("alert_date");
+        timePreference = (ListPreference) findPreference("alert_time");
 
-        btn_move.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(setting_alarm.this , MainActivity.class);
-                startActivity(intent); //액티비티 이동
-            }
-        });
+        prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+        if(!prefs.getString("alert_date", "3일 전").equals("")){
+            datePreference.setSummary(prefs.getString("alert_date", "3일 전"));
+        }
+        if(!prefs.getString("alert_time", "오전 9시").equals("")){
+            timePreference.setSummary(prefs.getString("alert_time", "오전 9시"));
+        }
+
+        prefs.registerOnSharedPreferenceChangeListener(prefListener);
     }
+    SharedPreferences.OnSharedPreferenceChangeListener prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            if(key.equals("alert_date")){
+                datePreference.setSummary(prefs.getString("alert_date", "3일 전"));
+            }
+            if(key.equals("alert_time")){
+                timePreference.setSummary(prefs.getString("alert_time", "오전 9시"));
+            }
+        }
+    };
 }
