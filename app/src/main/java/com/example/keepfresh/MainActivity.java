@@ -33,8 +33,8 @@ import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Realm realm;
-    private Realm exp_realm;
+    private static Realm realm;
+    private static Realm exp_realm;
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
 
@@ -49,22 +49,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 네비게이션 관련 기본생성 코드
-        setContentView(R.layout.activity_main);
-/*
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-*/
+        setContentView(R.layout.activity_main);
 
         roomTitleText = (TextView) findViewById(R.id.roomTitleText);
         refriTitleText = (TextView) findViewById(R.id.refriTitleText);
@@ -82,12 +68,11 @@ public class MainActivity extends AppCompatActivity {
             // .json파일의 정보를 읽어서 ExpList 테이블 생성
             parsingItemInfo();
 
-
-
             // 테스트 튜플 추가 테스트
-            createTuple("사과", 0);
-            createTuple("바나나", 1);
+            createTuple("사과", 1);
+            createTuple("바나나", 0);
             createTuple("귤", 2);
+            createTuple("팽이버섯", 1);
 
             MyApplication.initExp = true;
 
@@ -201,35 +186,10 @@ public class MainActivity extends AppCompatActivity {
                 /*******expire_date 설정*******/
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(itemList.getInputDate());
-                calendar.add(Calendar.DATE, expList.getExp_info(1));
+                calendar.add(Calendar.DATE, expList.getExp_info(storage));
                 itemList.setExpireDate(calendar.getTime());
-            }
-        });
-    }
 
-    // DB에 정보 추가할 튜플 생성
-    // TODO 유통기한 직접 입력시
-    public void createTuple(final String name, final int storage, final Date expireDate){
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                ItemList itemList = realm.createObject(ItemList.class);
-
-                /*******input_date 설정*******/
-                itemList.setInputDate(new Date());
-
-                /*******name 설정*******/
-                itemList.setName(name);
-
-                /*******id 설정*******/
-                String id = idFormat.format(itemList.getInputDate());
-                itemList.setId(id);
-
-                /*******storage 설정*******/
-                itemList.setStorage(storage);
-
-                /*******expire_date 설정*******/
-                itemList.setExpireDate(expireDate);
+                Log.i("date", expList.toString());
             }
         });
     }
@@ -249,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
             final Button button = new Button(this);
             button.setText(data.toString());
             container.addView(button);
+            if(container.getChildAt(0) != null)
+                container.getChildAt(0).setVisibility(View.VISIBLE);
+
             final String id = data.getId();
             Log.i("ids", id);
             button.setOnClickListener(new View.OnClickListener() {
@@ -296,21 +259,6 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-
-    public static void clearData() {
-        RealmConfiguration config = new RealmConfiguration.Builder().build();
-        Realm realm = Realm.getInstance(config);
-
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                realm.deleteAll();
-            }
-        });
-
-        realm.close();
-    }
-
     public void setContainer(int storage) {
         if(storage == 0) {
             container = (LinearLayout) findViewById(R.id.room_list);
@@ -334,4 +282,25 @@ public class MainActivity extends AppCompatActivity {
         else
             container.getChildAt(0).setVisibility(View.VISIBLE);
     }
+
+    public static void clearData() {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.deleteAll();
+            }
+        });
+
+        exp_realm.executeTransaction(new Realm.Transaction() {
+
+            @Override
+            public void execute(Realm realm) {
+                realm.deleteAll();
+            }
+        });
+
+        realm.close();
+        exp_realm.close();
+    }
+
 }
