@@ -21,6 +21,8 @@ public class item_information_typing extends AppCompatActivity {
     private Button cancel_btn;
     private Button submit_btn;
 
+    private Button btn_move;
+
     private Realm realm;
     private Realm exp_realm;
 
@@ -30,6 +32,16 @@ public class item_information_typing extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_information_typing);
+
+        btn_move =findViewById(R.id.button);
+
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(item_information_typing.this , MainActivity.class);
+                startActivity(intent); //액티비티 이동
+            }
+        });
 
         realm = Realm.getDefaultInstance();
         exp_realm = Realm.getDefaultInstance();

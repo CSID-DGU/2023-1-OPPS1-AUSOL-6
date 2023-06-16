@@ -1,6 +1,7 @@
 package com.example.keepfresh;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,11 +47,30 @@ public class MainActivity extends AppCompatActivity {
     private TextView refriTitleText;
     private TextView freezeTitleText;
 
+    private Button btn_move;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 네비게이션 관련 기본생성 코드
         setContentView(R.layout.activity_main);
+
+        btn_move =findViewById(R.id.button4);
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , item_information_typing.class);
+                startActivity(intent); //액티비티 이동
+            }
+        });
+        btn_move =findViewById(R.id.button5);
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this , setting_alarm.class);
+                startActivity(intent); //액티비티 이동
+            }
+        });
 /*
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
