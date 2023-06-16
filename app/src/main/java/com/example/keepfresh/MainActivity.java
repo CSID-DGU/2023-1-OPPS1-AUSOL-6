@@ -55,6 +55,20 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        btn_move = findViewById(R.id.button4);
+
+        btn_move = findViewById(R.id.button5);
+
+
+        roomTitleText = (TextView) findViewById(R.id.roomTitleText);
+        refriTitleText = (TextView) findViewById(R.id.refriTitleText);
+        freezeTitleText = (TextView) findViewById(R.id.freezeTitleText);
+
+        RealmConfiguration expConfig = new RealmConfiguration.Builder().allowWritesOnUiThread(true).build();
+        exp_realm = Realm.getInstance(expConfig);
+        realm = Realm.getDefaultInstance();
+
+
         btn_move =findViewById(R.id.button4);
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,34 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); //액티비티 이동
             }
         });
-/*
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
-*/
-
-
-        roomTitleText = (TextView) findViewById(R.id.roomTitleText);
-        refriTitleText = (TextView) findViewById(R.id.refriTitleText);
-        freezeTitleText = (TextView) findViewById(R.id.freezeTitleText);
-
-        RealmConfiguration expConfig = new RealmConfiguration.Builder().allowWritesOnUiThread(true).build();
-        exp_realm = Realm.getInstance(expConfig);
-        realm = Realm.getDefaultInstance();
-
-
-        /*************************************************
-        * TODO 모델로 인식할 클래스에 대한 addFood 작업 필요   *
-        ************************************************/
         if(!MyApplication.initExp){
             // .json파일의 정보를 읽어서 ExpList 테이블 생성
             parsingItemInfo();
@@ -113,13 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
             // Test 실행시마다 튜플 추가하기 때문에 지워주기
             //clearData();
-
+            Log.i("aaa", realm.where(ItemList.class).findAll().toString());
         }
-        Log.i("result", "start result");
 
         showResult();
 
-        Log.i("result", "endResult");
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
@@ -223,8 +208,6 @@ public class MainActivity extends AppCompatActivity {
                 calendar.setTime(itemList.getInputDate());
                 calendar.add(Calendar.DATE, expList.getExp_info(storage));
                 itemList.setExpireDate(calendar.getTime());
-
-                Log.i("date", expList.toString());
             }
         });
     }
@@ -232,12 +215,15 @@ public class MainActivity extends AppCompatActivity {
     // ItemList에 저장된 식품정보 불러오기
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
+
+        Log.i("aaa", results.toString());
+
         results = results.sort("expire_date", Sort.ASCENDING);
+
 
 
         for(ItemList data : results){
 
-            //chkContainerOn(data.getStorage());
             setContainer(data.getStorage());
             chkContainer();
 
@@ -248,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 container.getChildAt(0).setVisibility(View.VISIBLE);
 
             final String id = data.getId();
-            Log.i("ids", id);
+
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
