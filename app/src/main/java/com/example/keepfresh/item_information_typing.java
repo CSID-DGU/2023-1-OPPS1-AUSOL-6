@@ -58,7 +58,7 @@ public class item_information_typing extends AppCompatActivity {
 
         submit_btn.setOnClickListener(new View.OnClickListener() {
             EditText itemEditText = findViewById(R.id.item_id);
-            Spinner spinner = findViewById(R.id.spinner);
+            Spinner spinner = findViewById(R.id.Spinner);
             EditText expEditText = findViewById(R.id.expiration_id);
 
             @Override
