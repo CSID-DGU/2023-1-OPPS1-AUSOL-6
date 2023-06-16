@@ -35,8 +35,39 @@
         <item>오후 22시</item>
         <item>오후 23시</item>
     </string-array>
+    <string-array name="알람시간_value">
+        <item>오전 12시</item>
+        <item>오전 1시</item>
+        <item>오전 2시</item>
+        <item>오전 3시</item>
+        <item>오전 4시</item>
+        <item>오전 5시</item>
+        <item>오전 6시</item>
+        <item>오전 7시</item>
+        <item>오전 8시</item>
+        <item>오전 9시</item>
+        <item>오전 10시</item>
+        <item>오전 11시</item>
+        <item>오후 12시</item>
+        <item>오후 13시</item>
+        <item>오후 14시</item>
+        <item>오후 15시</item>
+        <item>오후 16시</item>
+        <item>오후 17시</item>
+        <item>오후 18시</item>
+        <item>오후 19시</item>
+        <item>오후 20시</item>
+        <item>오후 21시</item>
+        <item>오후 22시</item>
+        <item>오후 23시</item>
+    </string-array>
     <!--유통기한 알림일자 설정-->
     <string-array name="알람일자">
+        <item>1일 전</item>
+        <item>3일 전</item>
+        <item>7일 전</item>
+    </string-array>
+    <string-array name="알람일자_value">
         <item>1일 전</item>
         <item>3일 전</item>
         <item>7일 전</item>
