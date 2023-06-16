@@ -50,6 +50,7 @@ public class item_information_typing extends AppCompatActivity {
     private Calendar selectedCalendar = Calendar.getInstance();
 
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -160,6 +161,7 @@ public class item_information_typing extends AppCompatActivity {
         });
     }
 
+    // 유통기한 선택 팝업
     private void showCalendarPopup() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(dateEditText.getWindowToken(), 0);
@@ -182,9 +184,10 @@ public class item_information_typing extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 // 선택된 날짜 처리
-                String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
-                dateEditText.setText(selectedDate);
                 selectedCalendar.set(year, month, dayOfMonth);
+                dateEditText.setText(dateFormat.format(selectedCalendar.getTime()));
+
+
                 popupWindow.dismiss();
             }
         });

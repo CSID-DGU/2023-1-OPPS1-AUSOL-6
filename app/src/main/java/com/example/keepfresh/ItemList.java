@@ -1,6 +1,8 @@
 package com.example.keepfresh;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import io.realm.RealmObject;
 
 // 사용자 식품 리스트 DB
@@ -58,9 +60,26 @@ public class ItemList extends RealmObject {
 
     @Override
     public String toString(){
+        String storageText;
+
+        switch (storage) {
+            case 0:
+                storageText = "상온보관";
+                break;
+            case 1:
+                storageText = "냉장보관";
+                break;
+            case 2:
+                storageText = "냉동보관";
+                break;
+            default:
+                storageText = "알 수 없음";
+        }
+
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return "품목명 : " + item_name +
-                "\n보관 방법 : " + storage +
+                "\n보관 방법 : " + storageText +
                 "\n구매 일자 : " + dateFormat.format(input_date) +
                 "\n유통 기한 : " + dateFormat.format(expire_date);
     }
