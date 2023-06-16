@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#806EBEE3"
+    android:id="@+id/rootView"
     tools:context=".item_information_typing">
 
     <TextView

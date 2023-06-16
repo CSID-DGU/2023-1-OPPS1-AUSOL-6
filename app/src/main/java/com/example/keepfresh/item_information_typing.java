@@ -1,13 +1,16 @@
 package com.example.keepfresh;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -16,6 +19,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,25 +33,34 @@ public class item_information_typing extends AppCompatActivity {
 
     private Button cancel_btn;
     private Button submit_btn;
-
-    private Button btn_move;
+    private ConstraintLayout rootView;
+    private EditText itemEditText;
+    private Spinner spinner;
 
     private Realm realm;
     private Realm exp_realm;
 
+    // 유통기한 화면 출력용 EditText
     private EditText dateEditText;
+
+    // dateEditText 클릭시 나오는 popup (+ calendarView)
     private PopupWindow popupWindow;
+
+    // popup에서 날짜 선택 시 java에서도 calendar생성해서 날짜 저장
     private Calendar selectedCalendar = Calendar.getInstance();
 
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_information_typing);
 
-        btn_move =findViewById(R.id.cancel_btn);
+        rootView = findViewById(R.id.rootView);
         dateEditText = findViewById(R.id.expiration_id);
+        itemEditText = findViewById(R.id.item_id);
+        spinner = findViewById(R.id.Spinner);
 
         // 유통기한 입력 -> calendarView로 달력에서 입력받음
        dateEditText.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +77,21 @@ public class item_information_typing extends AppCompatActivity {
         cancel_btn = findViewById(R.id.cancel_btn);
         submit_btn = findViewById(R.id.submit_btn);
 
+        // 식품명 ExitText 클릭 후 다른곳 클릭시 키보드 없애기
+        rootView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // EditText의 포커스 제거
+                itemEditText.clearFocus();
+
+                // 키보드 숨기기
+                InputMethodManager imm = (InputMethodManager ) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                return false;
+            }
+        });
 
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +102,7 @@ public class item_information_typing extends AppCompatActivity {
         });
 
         submit_btn.setOnClickListener(new View.OnClickListener() {
-            EditText itemEditText = findViewById(R.id.item_id);
-            Spinner spinner = findViewById(R.id.Spinner);
+
 
             @Override
             public void onClick(View v) {
@@ -134,6 +161,9 @@ public class item_information_typing extends AppCompatActivity {
     }
 
     private void showCalendarPopup() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(dateEditText.getWindowToken(), 0);
+
         // PopupWindow를 생성하고 크기를 조정
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_calendar, null);
