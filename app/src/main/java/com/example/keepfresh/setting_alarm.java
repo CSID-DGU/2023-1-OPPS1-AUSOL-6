@@ -1,8 +1,8 @@
 package com.example.keepfresh;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
 //알람 설정 페이지
 public class setting_alarm extends AppCompatActivity {
 
