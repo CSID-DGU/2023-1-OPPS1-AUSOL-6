@@ -194,6 +194,8 @@ public class item_information_typing extends AppCompatActivity {
 
     // 유통기한 선택 팝업
     private void showCalendarPopup() {
+        ConstraintLayout layout = findViewById(R.id.constraintLayout9);
+
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(dateEditText.getWindowToken(), 0);
 
@@ -204,7 +206,7 @@ public class item_information_typing extends AppCompatActivity {
 
         // PopupWindow의 위치 설정
         int[] location = new int[2];
-        dateEditText.getLocationOnScreen(location);
+        layout.getLocationOnScreen(location);
         int x = location[0];
         int y = location[1] + dateEditText.getHeight();
         popupWindow.showAtLocation(dateEditText, Gravity.NO_GRAVITY, x, y);
