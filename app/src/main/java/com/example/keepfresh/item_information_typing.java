@@ -63,6 +63,7 @@ public class item_information_typing extends AppCompatActivity {
         itemEditText = findViewById(R.id.item_id);
         spinner = findViewById(R.id.Spinner);
 
+
         // 유통기한 입력 -> calendarView로 달력에서 입력받음
        dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
