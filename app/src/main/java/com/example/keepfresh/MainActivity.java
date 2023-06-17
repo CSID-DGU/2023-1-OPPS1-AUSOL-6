@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -256,18 +257,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //해당 id를 갖는 tuple 삭제
-                final RealmResults<ItemList> results = realm.where(ItemList.class).equalTo("id", id).findAll();
+                try {
+                    final RealmResults<ItemList> results = realm.where(ItemList.class).equalTo("id", id).findAll();
 
-                setContainer((results.get(0).getStorage()));
+                    setContainer((results.get(0).getStorage()));
 
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        results.deleteFirstFromRealm();
-                        container.removeView(button);
-                        chkContainer();
-                    }
-                });
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            results.deleteFirstFromRealm();
+                            container.removeView(button);
+                            chkContainer();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                container.invalidate();
             }
         });
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -298,10 +304,56 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if(container.getChildCount() <= 1)
+        if(container.getChildCount() <= 1) {
             container.getChildAt(0).setVisibility(View.INVISIBLE);
-        else
+        } else {
             container.getChildAt(0).setVisibility(View.VISIBLE);
+        }
+        chkLayout();
+    }
+
+    public void chkLayout() {
+        if(container == null) {
+            return;
+        }
+
+        LinearLayout roomListLayout = findViewById(R.id.room_list);
+        LinearLayout refriListLayout = findViewById(R.id.refri_list);
+        LinearLayout freezeListLayout = findViewById(R.id.freeze_list);
+
+        RelativeLayout.LayoutParams roomListLayoutParams = (RelativeLayout.LayoutParams) roomListLayout.getLayoutParams();
+        RelativeLayout.LayoutParams refriListLayoutParams = (RelativeLayout.LayoutParams) refriListLayout.getLayoutParams();
+        RelativeLayout.LayoutParams freezeListLayoutParams = (RelativeLayout.LayoutParams) freezeListLayout.getLayoutParams();
+
+        /* room:true, refri:true, freese:true */
+        if(roomTitleText.getVisibility() == View.VISIBLE) {
+            /* room:true */
+            if(refriTitleText.getVisibility() == View.VISIBLE) {
+                /* room:true, refri:true */
+                roomListLayoutParams.addRule(RelativeLayout.BELOW, R.id.list_layout);
+                refriListLayoutParams.addRule(RelativeLayout.BELOW, R.id.room_list);
+                freezeListLayoutParams.addRule(RelativeLayout.BELOW, R.id.refri_list);
+            } else {
+                /* room:true, refri:false*/
+                roomListLayoutParams.addRule(RelativeLayout.BELOW, R.id.list_layout);
+                refriListLayoutParams.removeRule(RelativeLayout.BELOW);
+                freezeListLayoutParams.addRule(RelativeLayout.BELOW, R.id.room_list);
+            }
+        } else {
+            /* room:false */
+            if(refriTitleText.getVisibility() == View.VISIBLE) {
+                /* room:false, refri:true*/
+                roomListLayoutParams.removeRule(RelativeLayout.BELOW);
+                refriListLayoutParams.addRule(RelativeLayout.BELOW, R.id.list_layout);
+                freezeListLayoutParams.addRule(RelativeLayout.BELOW, R.id.refri_list);
+            } else {
+                /* room:false, refri:false*/
+                roomListLayoutParams.removeRule(RelativeLayout.BELOW);
+                refriListLayoutParams.removeRule(RelativeLayout.BELOW);
+                freezeListLayoutParams.addRule(RelativeLayout.BELOW, R.id.list_layout);
+            }
+        }
+
     }
 
     public static void clearData() {
