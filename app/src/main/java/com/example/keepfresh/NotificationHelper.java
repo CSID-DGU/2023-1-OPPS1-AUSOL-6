@@ -11,7 +11,7 @@ import android.preference.ListPreference;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-public class SendAlert extends ContextWrapper{
+public class NotificationHelper extends ContextWrapper{
 
     public static final String channelID = "channelID";
     public static final String channelNm = "channelNm";
@@ -21,7 +21,7 @@ public class SendAlert extends ContextWrapper{
 
     private NotificationManager notiManager;
 
-    public SendAlert(Context base){
+    public NotificationHelper(Context base){
         super(base);
         createChannels();
     }
