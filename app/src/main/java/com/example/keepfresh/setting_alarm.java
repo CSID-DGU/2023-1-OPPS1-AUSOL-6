@@ -1,12 +1,14 @@
 package com.example.keepfresh;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 
-import androidx.annotation.Nullable;
+import android.os.Bundle;
+
+import android.content.SharedPreferences;
 
 import com.example.keepfresh.R;
 
