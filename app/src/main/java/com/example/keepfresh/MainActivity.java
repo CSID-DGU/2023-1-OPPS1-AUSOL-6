@@ -1,5 +1,6 @@
 package com.example.keepfresh;
 
+import android.app.AlarmManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
 
         btn_move = findViewById(R.id.button5);
 
-
         roomTitleText = (TextView) findViewById(R.id.roomTitleText);
         refriTitleText = (TextView) findViewById(R.id.refriTitleText);
         freezeTitleText = (TextView) findViewById(R.id.freezeTitleText);
@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showResult();
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
     }
 

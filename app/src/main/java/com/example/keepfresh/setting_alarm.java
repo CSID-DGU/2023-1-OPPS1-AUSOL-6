@@ -10,7 +10,9 @@ import android.os.Bundle;
 
 import android.content.SharedPreferences;
 
-//알람 설정 페이지
+import com.example.keepfresh.R;
+
+//알람 설정 페이지 display
 public class setting_alarm extends PreferenceFragment {
     SharedPreferences prefs;
 
