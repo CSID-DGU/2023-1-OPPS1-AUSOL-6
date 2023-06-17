@@ -23,7 +23,7 @@ public class MyApplication extends Application {
     public static String name;
 
     public AlarmManager alarmManager;
-    private SharedPreferences prefs;
+    public SharedPreferences prefs;
     boolean alarm_enable;
 
     public MyApplication() {
@@ -76,6 +76,7 @@ public class MyApplication extends Application {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
+        Date dat = cal.getTime();
         // If the specified time has already passed, set the alarm for the next day
         if (cal.getTime().before(new Date())) {
             cal.add(Calendar.DAY_OF_MONTH, 1);

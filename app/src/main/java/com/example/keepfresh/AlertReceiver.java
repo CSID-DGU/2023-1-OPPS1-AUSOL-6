@@ -10,7 +10,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import com.example.keepfresh.MainActivity;
 
-public class AlertReceiver {
+public class AlertReceiver extends BroadcastReceiver {
     private NotificationManager notificationManager;
     private static final int NOTIFICATION_ID = 0;
     private static final String CHANNEL_ID = "channel_id";
@@ -29,16 +29,10 @@ public class AlertReceiver {
                     CHANNEL_ID, // Channel ID
                     CHANNEL_NAME, // Channel name
                     NotificationManager.IMPORTANCE_HIGH
-                    /*
-                    1. IMPORTANCE_HIGH: Plays a sound and appears as a heads-up notification.
-                    2. IMPORTANCE_DEFAULT: Plays a sound.
-                    3. IMPORTANCE_LOW: No sound.
-                    4. IMPORTANCE_MIN: No sound and does not appear in the status bar.
-                     */
             );
             notificationChannel.enableLights(true); // Enable lights
             notificationChannel.setLightColor(R.color.purple_500); // Set light color
-            notificationChannel.enableVibration(true); // Enable vibration
+            notificationChannel.enableVibration(false); // Enable vibration
             notificationChannel.setDescription(context.getString(R.string.app_name)); // Channel description
             notificationManager.createNotificationChannel(notificationChannel);
         }
@@ -51,12 +45,6 @@ public class AlertReceiver {
                 NOTIFICATION_ID, // Request code
                 contentIntent, // Intent to be launched when the notification is clicked
                 PendingIntent.FLAG_UPDATE_CURRENT
-                /*
-                1. FLAG_UPDATE_CURRENT: If the PendingIntent already exists, update the extras of the intent.
-                2. FLAG_CANCEL_CURRENT: If the PendingIntent already exists, cancel it and create a new one.
-                3. FLAG_NO_CREATE: If the PendingIntent already exists, return null instead of creating a new one.
-                4. FLAG_ONE_SHOT: The PendingIntent can only be used once.
-                 */
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
