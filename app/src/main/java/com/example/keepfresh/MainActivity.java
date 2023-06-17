@@ -1,9 +1,13 @@
 package com.example.keepfresh;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,8 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -35,6 +45,9 @@ import io.realm.Sort;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
+    private static final int REQUEST_IMAGE = 101;
+
     private static Realm realm;
     private static Realm exp_realm;
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -50,16 +63,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btn_move;
 
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private Bitmap capturedImage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        btn_move = findViewById(R.id.button4);
-
-        btn_move = findViewById(R.id.button5);
-
 
         roomTitleText = (TextView) findViewById(R.id.roomTitleText);
         refriTitleText = (TextView) findViewById(R.id.refriTitleText);
@@ -70,7 +82,19 @@ public class MainActivity extends AppCompatActivity {
         realm = Realm.getDefaultInstance();
 
 
-        btn_move =findViewById(R.id.button4);
+        btn_move = findViewById(R.id.button3);
+        btn_move.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                } else {
+                    openCameraIntent();
+                }
+            }
+        });
+
+        btn_move = findViewById(R.id.button4);
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); //액티비티 이동
             }
         });
-        btn_move =findViewById(R.id.button5);
+        btn_move = findViewById(R.id.button5);
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,10 +125,31 @@ public class MainActivity extends AppCompatActivity {
 
             // Test 실행시마다 튜플 추가하기 때문에 지워주기
             //clearData();
-            Log.i("aaa", realm.where(ItemList.class).findAll().toString());
         }
 
         showResult();
+
+        // Test 이미지 확인용 view
+        //ImageView imageView = findViewById(R.id.testImage);
+
+        // 카메라 촬영 이후 동작
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            capturedImage = (Bitmap) data.getExtras().get("data");
+
+                            // Test 이미지 확인용 코드
+                            //imageView.setImageBitmap(capturedImage);
+
+                            // TODO 사진 입력시 모델로 전송 함수 실행
+                        }
+                    }
+                }
+            });
 
     }
 
@@ -203,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //나머지 data는 expList table을 참고해서 설정함
                 ExpList expList = exp_realm.where(ExpList.class).equalTo("name", name).findAll().first();
-                
+
                 /*******expire_date 설정*******/
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(itemList.getInputDate());
@@ -284,6 +329,13 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+
+
+    public void openCameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraLauncher.launch(intent);
     }
 
     public void setContainer(int storage) {

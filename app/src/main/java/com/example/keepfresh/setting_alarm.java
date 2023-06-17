@@ -1,14 +1,12 @@
 package com.example.keepfresh;
 
-import androidx.annotation.Nullable;
-import androidx.preference.PreferenceManager;
-
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
-import android.os.Bundle;
-
-import android.content.SharedPreferences;
+import androidx.annotation.Nullable;
 
 //알람 설정 페이지
 public class setting_alarm extends PreferenceFragment {
