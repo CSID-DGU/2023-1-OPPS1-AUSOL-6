@@ -115,21 +115,18 @@ public class item_information_typing extends AppCompatActivity {
                 String nameText = itemEditText.getText().toString();
                 int selectedStorage = 0;
 
-                /************************************
-                 * TODO 보관방법 spiner 추가되면 바꾸기 *
-                 ***********************************/
-                /*
                 String selectedStorageText = spinner.getSelectedItem().toString();
 
-                if(selectedStorageText == "실온보관") {
+                if(selectedStorageText.equals("실온보관")) {
                     selectedStorage = 0;
-                } else if(selectedStorageText == "냉장보관") {
+                } else if(selectedStorageText.equals("냉장보관")) {
                     selectedStorage = 1;
-                } else if(selectedStorageText == "냉동보관") {
+                } else if(selectedStorageText.equals("냉동보관")) {
                     selectedStorage = 2;
+                } else {
+                    selectedStorage = -1;
                 }
 
-                 */
                 Log.i("addd" ,nameText + selectedStorage + selectedCalendar.getTime().toString());
                 createTuple(nameText, selectedStorage, selectedCalendar.getTime());
 
@@ -152,6 +149,12 @@ public class item_information_typing extends AppCompatActivity {
 
         if(chkValidDate(selectedDate)) {
             showInputMessage("유통기한은 오늘 날짜 이후로 설정해야 합니다.");
+            return;
+        }
+
+        Log.i("storage", String.valueOf(storage));
+        if(storage == -1) {
+            showInputMessage("보관방법을 선택 하세요.");
             return;
         }
 
