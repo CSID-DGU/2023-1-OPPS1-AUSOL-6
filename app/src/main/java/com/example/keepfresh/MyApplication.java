@@ -36,7 +36,7 @@ public class MyApplication extends Application {
         RealmConfiguration userConfig = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(userConfig);
 
-        // setAlarm();
+        setAlarm();
     }
     private void cancelAlarm() {
         Intent receiverIntent = new Intent(this, AlertReceiver.class);
@@ -51,6 +51,7 @@ public class MyApplication extends Application {
         String alert_t = prefs.getString("alert_time", "오전 9시");
         int alertTime = parseTime(alert_t);
         if (!alarm_enable) {
+            cancelAlarm();
             return;
         }
 
