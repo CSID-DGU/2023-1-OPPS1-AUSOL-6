@@ -8,7 +8,9 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.Nullable;
 
-//알람 설정 페이지
+import com.example.keepfresh.R;
+
+//알람 설정 페이지 display
 public class setting_alarm extends PreferenceFragment {
     SharedPreferences prefs;
 
