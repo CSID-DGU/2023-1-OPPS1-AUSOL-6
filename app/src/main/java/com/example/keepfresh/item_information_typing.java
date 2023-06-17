@@ -33,7 +33,7 @@ public class item_information_typing extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_information_typing);
 
-        btn_move =findViewById(R.id.button);
+        btn_move =findViewById(R.id.cancel_btn);
 
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
