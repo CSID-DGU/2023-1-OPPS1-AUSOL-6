@@ -21,24 +21,30 @@ public class MyApplication extends Application {
     public static Boolean initExp = false;
     public static Boolean addCart = false;
     public static String name;
-    private AlarmManager alarmManager;
+
+    public AlarmManager alarmManager;
     private SharedPreferences prefs;
     boolean alarm_enable;
+
+    public MyApplication() {
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        alarm_enable = prefs.getBoolean("alert_enable", true);
-
         Realm.init(this);
         RealmConfiguration userConfig = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(userConfig);
 
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        alarm_enable = prefs.getBoolean("alert_enable", true);
+
         setAlarm();
     }
-    private void cancelAlarm() {
+
+    public void cancelAlarm() {
         Intent receiverIntent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
         if (alarmManager != null) {
@@ -46,12 +52,11 @@ public class MyApplication extends Application {
         }
     }
 
-    private void setAlarm() {
+    public void setAlarm() {
         // Check if push is available based on the option value
         String alert_t = prefs.getString("alert_time", "오전 9시");
         int alertTime = parseTime(alert_t);
         if (!alarm_enable) {
-            cancelAlarm();
             return;
         }
 
@@ -65,27 +70,28 @@ public class MyApplication extends Application {
         }
 
         // Set the alarm to start at the specified hour and minute
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, alertTime);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        cal.set(Calendar.HOUR_OF_DAY, alertTime);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
 
         // If the specified time has already passed, set the alarm for the next day
-        if (calendar.getTime().before(new Date())) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        if (cal.getTime().before(new Date())) {
+            cal.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         if (alarmManager != null) {
-            alarmManager.setRepeating(
+            alarmManager.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(),
+                    cal.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY,
                     pendingIntent
             );
         }
     }
 
-    private int parseTime(String alert_t) {
+    public int parseTime(String alert_t) {
         switch (alert_t){
             case "오전 12시":
                 return 0;

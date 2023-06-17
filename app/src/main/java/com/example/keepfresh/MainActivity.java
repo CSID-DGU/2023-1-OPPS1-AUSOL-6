@@ -1,8 +1,10 @@
 package com.example.keepfresh;
 
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView freezeTitleText;
 
     private Button btn_move;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +103,11 @@ public class MainActivity extends AppCompatActivity {
             MyApplication.initExp = true;
 
             // Test 실행시마다 튜플 추가하기 때문에 지워주기
-            //clearData();
+            // clearData();
             Log.i("aaa", realm.where(ItemList.class).findAll().toString());
         }
 
         showResult();
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
@@ -325,5 +326,4 @@ public class MainActivity extends AppCompatActivity {
         realm.close();
         exp_realm.close();
     }
-
 }
