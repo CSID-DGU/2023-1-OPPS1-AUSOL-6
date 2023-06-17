@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
                     //삭제하시겠습니까? 메세지
                     //예 아니오 --> 예 클릭 시 해당 데이터베이스 삭제
                     showMessage(id, button);
+
                 }
             });
         }
@@ -256,18 +257,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //해당 id를 갖는 tuple 삭제
-                final RealmResults<ItemList> results = realm.where(ItemList.class).equalTo("id", id).findAll();
+                try {
+                    final RealmResults<ItemList> results = realm.where(ItemList.class).equalTo("id", id).findAll();
 
-                setContainer((results.get(0).getStorage()));
+                    setContainer((results.get(0).getStorage()));
 
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        results.deleteFirstFromRealm();
-                        container.removeView(button);
-                        chkContainer();
-                    }
-                });
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            results.deleteFirstFromRealm();
+                            container.removeView(button);
+                            chkContainer();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                container.invalidate();
             }
         });
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {

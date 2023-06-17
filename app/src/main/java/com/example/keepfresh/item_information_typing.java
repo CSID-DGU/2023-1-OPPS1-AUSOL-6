@@ -2,6 +2,7 @@ package com.example.keepfresh;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -48,6 +50,8 @@ public class item_information_typing extends AppCompatActivity {
 
     // popup에서 날짜 선택 시 java에서도 calendar생성해서 날짜 저장
     private Calendar selectedCalendar = Calendar.getInstance();
+
+    private boolean isTupleCreated = false;
 
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -128,8 +132,10 @@ public class item_information_typing extends AppCompatActivity {
                 Log.i("addd" ,nameText + selectedStorage + selectedCalendar.getTime().toString());
                 createTuple(nameText, selectedStorage, selectedCalendar.getTime());
 
-                Intent intent = new Intent(item_information_typing.this , MainActivity.class);
-                startActivity(intent); //액티비티 이동
+                if(isTupleCreated) {
+                    Intent intent = new Intent(item_information_typing.this, MainActivity.class);
+                    startActivity(intent); //액티비티 이동
+                }
             }
         });
 
@@ -137,6 +143,17 @@ public class item_information_typing extends AppCompatActivity {
 
 
     public void createTuple(final String name, final int storage, final Date selectedDate){
+
+        if(name.isBlank()) {
+            showInputMessage("식품명을 입력 하세요.");
+            return;
+        }
+
+        if(chkValidDate(selectedDate)) {
+            showInputMessage("유통기한은 오늘 날짜 이후로 설정해야 합니다.");
+            return;
+        }
+
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -159,6 +176,20 @@ public class item_information_typing extends AppCompatActivity {
                 itemList.setExpireDate(selectedDate);
             }
         });
+
+        isTupleCreated = true;
+    }
+
+    // 유통기한이 현재 시간 이전 인지 확인
+    private boolean chkValidDate(Date inputDate) {
+        Date currentDate = new Date();
+
+        if (inputDate.before(currentDate)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     // 유통기한 선택 팝업
@@ -191,6 +222,21 @@ public class item_information_typing extends AppCompatActivity {
                 popupWindow.dismiss();
             }
         });
+    }
+
+    // 입력된 내용 없을 경우 메시지 출력
+    private void showInputMessage(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+
+        builder.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
