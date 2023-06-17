@@ -22,21 +22,21 @@ public class MyApplication extends Application {
     public static Boolean addCart = false;
     public static String name;
     private AlarmManager alarmManager;
-
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    boolean alarm_enable = prefs.getBoolean("alert_enable", true);
+    private SharedPreferences prefs;
+    boolean alarm_enable;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        alarm_enable = prefs.getBoolean("alert_enable", true);
+
         Realm.init(this);
-
         RealmConfiguration userConfig = new RealmConfiguration.Builder().build();
-
         Realm.setDefaultConfiguration(userConfig);
 
-        setAlarm();
+        // setAlarm();
     }
     private void cancelAlarm() {
         Intent receiverIntent = new Intent(this, AlertReceiver.class);

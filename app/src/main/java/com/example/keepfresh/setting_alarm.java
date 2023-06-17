@@ -27,7 +27,7 @@ public class setting_alarm extends PreferenceFragment {
         datePreference = (ListPreference) findPreference("alert_date");
         timePreference = (ListPreference) findPreference("alert_time");
 
-        prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         if(!prefs.getString("alert_date", "3일 전").equals("")){
             datePreference.setSummary(prefs.getString("alert_date", "3일 전"));
