@@ -27,6 +27,7 @@
             android:name=".item_information_typing"
             android:exported="true" >
 
+
         </activity>
         <activity
             android:name=".MainActivity"
