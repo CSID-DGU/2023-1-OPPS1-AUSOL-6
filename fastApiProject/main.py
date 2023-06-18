@@ -5,22 +5,17 @@ import uuid
 from fastapi import FastAPI
 from fastapi import UploadFile, File
 from PIL import Image
-import torch
 
 app = FastAPI()
-
-model = torch.load("C:/Users/qortm/model/finalV1.pt")
-model = model['model']
-model = model.float()
-model.eval()
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     image = await imageOpen(file)
     new_uuid = uuid.uuid4()
+    #파일 이름이 겹치면 안되므로 uuid를 생성해서 저장함
     image_name, image_path = await getImageNameAndPath(new_uuid, file.filename)
     image.save(image_path)
-    # 모델에 이미지 예측 수행
+    # 모델에 이미지 추론 수행
     await runPredict(image_path)
     storedFilePath = find_files_by_name(image_name)
     results = read_label_file(storedFilePath)
@@ -29,8 +24,9 @@ async def predict(file: UploadFile = File(...)):
 
 
 async def runPredict(image_path):
-    yolo_command = "yolo task=detect mode=predict model='C:/Users/qortm/model/finalV1.pt' show=True conf=0.1 source='{}' save_txt=True".format(
-        image_path)
+    yolo_command = "yolo task=detect mode=predict model='./model/finalModel.pt' " \
+                   "show=True conf=0.1 source='{}' save_txt=True"\
+                    .format(image_path)
     os.system(yolo_command)
 
 
@@ -48,7 +44,7 @@ def getResults(results):
 async def getImageNameAndPath(new_uuid, filename):
     extension = filename.split(".")[-1].lower()  # 파일 확장자 추출 및 소문자로 변환
     image_name = str(new_uuid) + "." + extension
-    image_path = 'C:/Users/qortm/model/' + image_name
+    image_path = './images/' + image_name
     return image_name, image_path
 
 
@@ -77,5 +73,3 @@ def find_files_by_name(target_name):
                 file_path = os.path.join(root, file)
                 directoryPath = os.path.dirname(file_path)
                 return directoryPath
-
-
