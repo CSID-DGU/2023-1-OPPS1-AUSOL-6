@@ -29,7 +29,7 @@ public class AlertReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "channel_id";
     private static final String CHANNEL_NAME = "ChannelName";
     SharedPreferences prefs;
-    private static Realm realm = Realm.getDefaultInstance();
+    private static Realm realm;
 
 
     public void onReceive(Context context, Intent intent) {
@@ -69,7 +69,8 @@ public class AlertReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground) // Icon
                 .setContentTitle("유통기한 알림") // Title
-                .setContentText(makeNotificationMessage(alertDate)) // Content
+                .setContentText("") // Content
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(makeNotificationMessage(alertDate)))
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
@@ -79,32 +80,47 @@ public class AlertReceiver extends BroadcastReceiver {
 
     }
 
-    private String makeNotificationMessage(int alertDate){
+    private String makeNotificationMessage(int alertDate) {
+        realm = Realm.getDefaultInstance();
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
         Date now = new Date();
-        String str = "";
+        StringBuilder sb = new StringBuilder();
         int cnt = 0;
+
         long diff;
         results = results.sort("expire_date", Sort.ASCENDING);
-        for (ItemList data : results){
-            diff=data.getExpireDate().getTime() - now.getTime();
-            int dDay=(int) (diff / (24*60*60*1000));
+        for (ItemList data : results) {
+            diff = data.getExpireDate().getTime() - now.getTime();
+            int dDay = (int) (diff / (24 * 60 * 60 * 1000));
             if (dDay > alertDate) break;
-            switch (data.getStorage()){
+
+            cnt++;
+            switch (data.getStorage()) {
                 case 0:
-                    str = str + "상온 보관중인 " + data.getName() + "의 유통기한이 " + dDay + "일 남았습니다.\n"; break;
+                    sb.append("상온 보관중인 ").append(data.getName()).append("의 유통기한이 ")
+                            .append(dDay).append("일 남았습니다.\n");
+                    break;
                 case 1:
-                    str = str + "냉장 보관중인 " + data.getName() + "의 유통기한이 " + dDay + "일 남았습니다.\n"; break;
+                    sb.append("냉장 보관중인 ").append(data.getName()).append("의 유통기한이 ")
+                            .append(dDay).append("일 남았습니다.\n");
+                    break;
                 case 2:
-                    str = str + "냉동 보관중인 " + data.getName() + "의 유통기한이 " + dDay + "일 남았습니다.\n"; break;
+                    sb.append("냉동 보관중인 ").append(data.getName()).append("의 유통기한이 ")
+                            .append(dDay).append("일 남았습니다.\n");
+                    break;
                 default:
-                    str = str + data.getName() + " 보관장소 오류!"; break;
+                    sb.append(data.getName()).append(" 보관장소 오류!\n");
+                    break;
             }
         }
-        if (cnt == 0) return "오늘 유통기한이 임박한 식품은 없습니다.";
-        else {
-            str = "유통기한이 임박한 식품이 " + cnt + "개 있습니다.\n" + str;
-            return str;
+
+        realm.close();
+
+        if (cnt == 0) {
+            return "오늘 유통기한이 임박한 식품은 없습니다.";
+        } else {
+            sb.insert(0, "유통기한이 임박한 식품이 " + cnt + "개 있습니다.\n");
+            return sb.toString();
         }
     }
     private int parseDate(String alert_d) {

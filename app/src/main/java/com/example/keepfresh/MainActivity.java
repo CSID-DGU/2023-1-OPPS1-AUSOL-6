@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             MyApplication.initExp = true;
 
             // Test 실행시마다 튜플 추가하기 때문에 지워주기
-            //clearData();
+            // clearData();
         }
 
         showResult();
