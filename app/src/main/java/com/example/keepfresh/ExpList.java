@@ -4,6 +4,9 @@ import io.realm.RealmObject;
 
 // 유통기한 저장 DB(모델에서 인식할 클래스만)
 public class ExpList extends RealmObject {
+    //아이템 클래스 이름
+    int item_num;
+    
     // 식품명
     String name;
 
@@ -17,6 +20,9 @@ public class ExpList extends RealmObject {
     int exp_info1;
     int exp_info2;
 
+    public int getItem_num() { return item_num; }
+    public void setItem_num(int item_num) { this.item_num = item_num;}
+    
     public String getName() {
         return name;
     }
