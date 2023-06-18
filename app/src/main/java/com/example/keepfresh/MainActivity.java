@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private Bitmap capturedImage;
+    private int chkModelStorage = -1;
+    private Date chkModelDate;
 
 
     @Override
@@ -143,12 +146,27 @@ public class MainActivity extends AppCompatActivity {
                         if (data != null) {
                             capturedImage = (Bitmap) data.getExtras().get("data");
 
-                            // Test 이미지 확인용 코드
-                            //imageView.setImageBitmap(capturedImage);
+                            int itemClassId;
+
                             try {
+                                //triton 전송
                                 String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
                                 System.out.println("Response: " + response);
-                                // 응답 처리 로직 추가
+                                Log.i("modelr", String.valueOf(parsingModelResult(response)));
+                                // triton 결과 파싱(int)
+                                itemClassId = parsingModelResult(response);
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                String itemName = matchClassId(itemClassId);
+                                int itemStorage = chkModelStorage;
+                                String itemExpDate = dateFormat.format(chkModelDate);
+
+                                Intent intent = new Intent(MainActivity.this, item_information_typing.class);
+                                intent.putExtra("itemName", itemName);
+                                intent.putExtra("itemStorage", itemStorage);
+                                intent.putExtra("itemExpDate", itemExpDate);
+                                startActivity(intent);
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 // 예외 처리 로직 추가
@@ -161,16 +179,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
-    public void addExpList(String name, int recommend_storage, String[] storage_info, int[] exp_info){
+    public void addExpList(int item_num, String name, int recommend_storage, String[] storage_info, int[] exp_info){
 
         //이미 있으면 생성하지 않음
-        if(exp_realm.where(ExpList.class).equalTo("name", name).findAll().size() != 0)
+        if(exp_realm.where(ExpList.class).equalTo("item_num", item_num).findAll().size() != 0)
             return;
 
         exp_realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 ExpList expList = exp_realm.createObject(ExpList.class);
+                expList.setItem_num(item_num);
                 expList.setName(name);
                 expList.setRecommend_storage(recommend_storage);
                 for (int i = 0; i < 3; i++) {
@@ -190,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void parsingItemInfo(){
 
+        int item_num;
         String name;
         int recommendStore;
         String[] storageInfoArray = new String[3];
@@ -210,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    item_num = ((JSONObject) jsonObject).optInt("item_no");
                     name = ((JSONObject) jsonObject).optString("item_name");
                     recommendStore = jsonObject.optInt("recommend_store");
                     storageInfoArray[0] = jsonObject.optString("storage_info_0");
@@ -219,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
                     expInfoArray[1] = jsonObject.optInt("exp_info_1");
                     expInfoArray[2] = jsonObject.optInt("exp_info_2");
 
-                    addExpList(name, recommendStore, storageInfoArray, expInfoArray);
+                    addExpList(item_num, name, recommendStore, storageInfoArray, expInfoArray);
 
                 }
             } catch (IOException | JSONException e) {
@@ -228,6 +249,30 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int parsingModelResult(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONArray resultArray = jsonObject.getJSONArray("result");
+            if (resultArray.length() > 0) {
+                return resultArray.getInt(0);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String matchClassId(int inputId) {
+        if(exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().size() != 0) {
+            ExpList ExpTuple = exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().first();
+
+            modelSetItemStorage(ExpTuple);
+
+            return ExpTuple.getName();
+        }
+        return null;
     }
 
     // DB에 정보 추가할 튜플 생성
@@ -409,6 +454,96 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    public void modelSetItemStorage(ExpList exptuple) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String buttonText1 = exptuple.getStorage_info(0) +
+                "\n보관기간 : " + exptuple.getExp_info(0);
+        String buttonText2 = exptuple.getStorage_info(1) +
+                "\n보관기간 : " + exptuple.getExp_info(1);
+        String buttonText3 = exptuple.getStorage_info(2) +
+                "\n보관기간 : " + exptuple.getExp_info(2);
+
+        // 버튼추가
+        builder.setPositiveButton(buttonText1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showStorageDialog(0);
+                if (chkModelStorage != -1) {
+                    dialog.dismiss(); // 팝업 창 닫기
+                } else {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.add(Calendar.DATE, exptuple.getExp_info(0));
+                    chkModelDate = calendar.getTime();
+                }
+            }
+        });
+
+        builder.setNeutralButton(buttonText2, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showStorageDialog(1);
+                if (chkModelStorage != -1) {
+                    dialog.dismiss(); // 팝업 창 닫기
+                } else {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.add(Calendar.DATE, exptuple.getExp_info(1));
+                    chkModelDate = calendar.getTime();
+                }
+            }
+        });
+
+        builder.setNegativeButton(buttonText3, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showStorageDialog(2);
+                if (chkModelStorage != -1) {
+                    dialog.dismiss(); // 팝업 창 닫기
+                } else {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.add(Calendar.DATE, exptuple.getExp_info(2));
+                    chkModelDate = calendar.getTime();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        // 팝업 창의 속성 설정
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(dialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+        dialog.show();
+        dialog.getWindow().setAttributes(layoutParams);
+    }
+
+    public void showStorageDialog(int num) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("보관방법 선택");
+        builder.setMessage(num == 0 ? "실온보관" : num == 1 ? "냉장보관" : "냉동보관" + "을 선택하시겠습니까?");
+
+        //예 클릭 시
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                chkModelStorage = num;
+            }
+        });
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                chkModelStorage = -1;
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     public static void clearData() {

@@ -67,7 +67,18 @@ public class item_information_typing extends AppCompatActivity {
         itemEditText = findViewById(R.id.item_id);
         spinner = findViewById(R.id.Spinner);
 
-
+        // 모델로부터 정보가 넘어왔을때
+        Intent intent = getIntent();
+        if (intent.hasExtra("itemName")) {
+            String itemName = intent.getStringExtra("itemName");
+            int storage = intent.getIntExtra("itemStorage", 0);
+            String expDate = intent.getStringExtra("itemExpDate");
+            
+            // 미리 정보 입력
+            itemEditText.setText(itemName);
+            spinner.setSelection(storage + 1);
+            dateEditText.setText(expDate);
+        }
         // 유통기한 입력 -> calendarView로 달력에서 입력받음
        dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
