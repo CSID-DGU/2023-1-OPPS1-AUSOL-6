@@ -27,6 +27,9 @@ public class MyApplication extends Application {
     public SharedPreferences prefs;
     boolean alarm_enable;
 
+    Intent receiverIntent;
+    PendingIntent pendingIntent;
+
     public MyApplication() {
     }
 
@@ -38,6 +41,9 @@ public class MyApplication extends Application {
         RealmConfiguration userConfig = new RealmConfiguration.Builder().build();
         Realm.setDefaultConfiguration(userConfig);
 
+        receiverIntent = new Intent(this, AlertReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
+
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         alarm_enable = prefs.getBoolean("alert_enable", true);
@@ -46,8 +52,6 @@ public class MyApplication extends Application {
     }
 
     public void cancelAlarm() {
-        Intent receiverIntent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
         }
@@ -58,13 +62,8 @@ public class MyApplication extends Application {
         String alert_t = prefs.getString("alert_time", "오전 9시");
         int alertTime = parseTime(alert_t);
         if (!alarm_enable) {
-            cancelAlarm();
             return;
         }
-        // Send values to AlertReceiver
-        Intent receiverIntent = new Intent(this, AlertReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
-
         // Cancel previous push before registering the new one
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
