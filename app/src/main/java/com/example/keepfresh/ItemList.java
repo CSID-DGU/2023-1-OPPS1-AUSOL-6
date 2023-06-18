@@ -1,6 +1,7 @@
 package com.example.keepfresh;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -96,7 +97,13 @@ public class ItemList extends RealmObject {
 
             return "+ " + String.valueOf(diffMillis);
         } else {
-            long diffMillis = (date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000);
+            // 날짜를 뺄때 오늘은 더해줘야 되니까 하루 추가한 값으로 계산
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            Date date1 = calendar.getTime();
+
+            long diffMillis = (date1.getTime() - today.getTime()) / (24 * 60 * 60 * 1000);
             if(diffMillis == 0)
                 return "- day";
 
