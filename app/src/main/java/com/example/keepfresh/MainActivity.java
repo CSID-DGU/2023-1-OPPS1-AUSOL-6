@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showResult();
+        chkLayout();
 
         // Test 이미지 확인용 view
         //ImageView imageView = findViewById(R.id.testImage);
@@ -365,10 +366,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void chkLayout() {
-        if(container == null) {
-            return;
-        }
-
         LinearLayout roomListLayout = findViewById(R.id.room_list);
         LinearLayout refriListLayout = findViewById(R.id.refri_list);
         LinearLayout freezeListLayout = findViewById(R.id.freeze_list);
