@@ -23,6 +23,9 @@
         android:drawableLeft="@drawable/coldsize"
         android:background="@drawable/button_info_design"
         android:textColor="@color/black"
+        android:textStyle="normal"
+        android:textAlignment="center"
+        android:text="해감한 꼬막을 밀폐용기에 담아 냉동보관해주세요"
         android:textSize="24dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
