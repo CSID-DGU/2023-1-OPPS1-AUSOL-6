@@ -67,7 +67,7 @@ public class AlertReceiver extends BroadcastReceiver {
         );
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground) // Icon
+                .setSmallIcon(R.mipmap.ic_launcher_custom) // Icon
                 .setContentTitle("유통기한 알림") // Title
                 .setContentText("") // Content
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(makeNotificationMessage(alertDate)))
