@@ -9,7 +9,6 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             parsingItemInfo();
 
             // 테스트 튜플 추가 테스트
-            createTuple("사과", 1);
+//            createTuple("사과", 1);
 //            createTuple("바나나", 0);
 //            createTuple("귤", 2);
 //            createTuple("팽이버섯", 1);
@@ -289,28 +288,34 @@ public class MainActivity extends AppCompatActivity {
 
 
             // 버튼추가
-            button1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showStorageDialog(0, ExpTuple);
+            if(ExpTuple.getExp_info(0) > 0) {
+                button1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                        showStorageDialog(0, ExpTuple);
+                    }
 
-                }
-            });
+                });
+            }
 
-            button2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showStorageDialog(1, ExpTuple);
-                }
-            });
+            if(ExpTuple.getExp_info(1) > 0) {
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showStorageDialog(1, ExpTuple);
+                    }
+                });
+            }
 
-            button3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showStorageDialog(2, ExpTuple);
-                }
-            });
+            if(ExpTuple.getExp_info(2) > 0) {
+                button3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showStorageDialog(2, ExpTuple);
+                    }
+                });
+            }
 
             dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); // 전체 화면 크기로 설정
             dialog.show();
@@ -366,7 +371,6 @@ public class MainActivity extends AppCompatActivity {
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
 
-        Log.i("aaa", results.toString());
 
         results = results.sort("expire_date", Sort.ASCENDING);
 
@@ -515,13 +519,14 @@ public class MainActivity extends AppCompatActivity {
 
         //예 클릭 시
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 chkModelStorage = num;
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.DATE, ExpTuple.getExp_info(chkModelStorage));
-                chkModelDate = calendar.getTime();;
+                chkModelDate = calendar.getTime();
                 runModelIntent();
             }
         });

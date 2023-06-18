@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -115,7 +114,7 @@ public class item_information_typing extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(item_information_typing.this , MainActivity.class);
-                startActivity(intent); //액티비티 이동
+                startActivity(intent); // 액티비티 이동
             }
         });
 
@@ -139,7 +138,6 @@ public class item_information_typing extends AppCompatActivity {
                     selectedStorage = -1;
                 }
 
-                Log.i("addd" ,nameText + selectedStorage + selectedCalendar.getTime().toString());
                 createTuple(nameText, selectedStorage, selectedCalendar.getTime());
 
                 if(isTupleCreated) {
@@ -164,7 +162,6 @@ public class item_information_typing extends AppCompatActivity {
             return;
         }
 
-        Log.i("storage", String.valueOf(storage));
         if(storage == -1) {
             showInputMessage("보관방법을 선택 하세요.");
             return;
@@ -240,10 +237,6 @@ public class item_information_typing extends AppCompatActivity {
                 popupWindow.dismiss();
             }
         });
-    }
-
-    private void setModelDate() {
-
     }
 
     // 입력된 내용 없을 경우 메시지 출력
