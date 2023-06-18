@@ -9,27 +9,7 @@
     android:id="@+id/rootView"
     tools:context=".item_information_typing">
 
-    <TextView
-        android:layout_width="125dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
-        android:background="#E3DBDB"
-        android:text="input info section"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="350dp"
-        android:layout_height="650dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="#E3DBDB"
-        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="300dp"
@@ -111,13 +91,13 @@
                     android:id="@+id/expiration_id"
                     android:layout_width="155dp"
                     android:layout_height="44dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:onClick="showCalendarDialog"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textView8"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:onClick="showCalendarDialog"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -148,9 +128,9 @@
                 android:id="@+id/Spinner"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:entries="@array/보관방법"
-
                 android:layout_marginTop="16dp"
+
+                android:entries="@array/보관방법"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout8" />
@@ -196,5 +176,4 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

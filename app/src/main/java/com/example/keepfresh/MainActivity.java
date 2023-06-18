@@ -1,7 +1,6 @@
 package com.example.keepfresh;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +25,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -40,7 +39,6 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Stack;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -153,20 +151,32 @@ public class MainActivity extends AppCompatActivity {
                              * TODO model 불러와지면 주석 제거 *
                              *******************************/
                             capturedImage = (Bitmap) data.getExtras().get("data");
- //                           try {
+                            try {
 
- //                               //triton 전송
- //                               String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
- //
- //                               Log.i("modelr", String.valueOf(parsingModelResult(response)));
- //                               // triton 결과 파싱(int)
- //                               itemClassId = parsingModelResult(response);
-                            
-                                itemClassId = 10; // 테스트용 model 불러와지면 삭제
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
+                                //triton 전송
+                                TritonAPIHelper.sendPhotoToTritonAsync(capturedImage, new TritonAPIHelper.Callback() {
+                                    @Override
+                                    public void onSuccess(String response) {
+                                        // 성공 처리
+                                        itemClassId = parsingModelResult(response);
+                                        Log.i("tetete",response);
+                                    }
 
-//                            }
+                                    @Override
+                                    public void onError(IOException e) {
+                                        // 오류 처리
+                                        Log.i("tetete",e.toString());
+                                    }
+                                });
+
+  //                              Log.i("tetete", String.valueOf(parsingModelResult(response)));
+                                // triton 결과 파싱(int)
+   //                             itemClassId = parsingModelResult(response);
+
+  //                              itemClassId = 10; // 테스트용 model 불러와지면 삭제
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }
                     if(itemClassId != -1) {
@@ -263,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return 0;
     }
 
