@@ -1,6 +1,6 @@
 package com.example.keepfresh;
 
-import android.Manifest
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
