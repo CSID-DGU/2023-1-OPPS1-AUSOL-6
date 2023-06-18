@@ -25,7 +25,6 @@ public class AlertReceiver extends BroadcastReceiver {
     private static final String CHANNEL_NAME = "ChannelName";
     SharedPreferences prefs;
     private static Realm realm;
-    private static Realm realm_exp;
 
 
     public void onReceive(Context context, Intent intent) {
@@ -64,7 +63,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground) // Icon
-                .setContentTitle("알림제목") // Title
+                .setContentTitle(makeNotificationTitle()) // Title
                 .setContentText(makeNotificationMessage()) // Content
                 .setContentIntent(contentPendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -74,7 +73,11 @@ public class AlertReceiver extends BroadcastReceiver {
         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
     }
+    private String makeNotificationTitle(){
 
+        // debug
+        return "test";
+    }
     private String makeNotificationMessage(){
 
         // debug

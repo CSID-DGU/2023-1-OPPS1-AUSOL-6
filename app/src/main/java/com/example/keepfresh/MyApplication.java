@@ -58,9 +58,9 @@ public class MyApplication extends Application {
         String alert_t = prefs.getString("alert_time", "오전 9시");
         int alertTime = parseTime(alert_t);
         if (!alarm_enable) {
+            cancelAlarm();
             return;
         }
-
         // Send values to AlertReceiver
         Intent receiverIntent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, receiverIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -69,7 +69,6 @@ public class MyApplication extends Application {
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
         }
-
         // Set the alarm to start at the specified hour and minute
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
