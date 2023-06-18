@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/transparent">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textSize="24dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textSize="24dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textSize="24dp"/>
+
+</LinearLayout>

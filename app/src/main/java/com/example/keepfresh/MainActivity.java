@@ -1,6 +1,7 @@
 package com.example.keepfresh;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static Realm realm;
     private static Realm exp_realm;
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private ActivityMainBinding binding;
 
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private Bitmap capturedImage;
+    private int itemClassId = -1;
+    private String chkModelName;
     private int chkModelStorage = -1;
     private Date chkModelDate;
 
@@ -120,9 +123,9 @@ public class MainActivity extends AppCompatActivity {
 
             // 테스트 튜플 추가 테스트
             createTuple("사과", 1);
-            createTuple("바나나", 0);
-            createTuple("귤", 2);
-            createTuple("팽이버섯", 1);
+//            createTuple("바나나", 0);
+//            createTuple("귤", 2);
+//            createTuple("팽이버섯", 1);
 
             MyApplication.initExp = true;
 
@@ -144,37 +147,34 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null) {
+                            /*******************************
+                             * TODO model 불러와지면 주석 제거 *
+                             *******************************/
                             capturedImage = (Bitmap) data.getExtras().get("data");
+ //                           try {
 
-                            int itemClassId;
+ //                               //triton 전송
+ //                               String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
+ //
+ //                               Log.i("modelr", String.valueOf(parsingModelResult(response)));
+ //                               // triton 결과 파싱(int)
+ //                               itemClassId = parsingModelResult(response);
+                            
+                                itemClassId = 10; // 테스트용 model 불러와지면 삭제
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
 
-                            try {
-                                //triton 전송
-                                String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
-                                System.out.println("Response: " + response);
-                                Log.i("modelr", String.valueOf(parsingModelResult(response)));
-                                // triton 결과 파싱(int)
-                                itemClassId = parsingModelResult(response);
-
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                String itemName = matchClassId(itemClassId);
-                                int itemStorage = chkModelStorage;
-                                String itemExpDate = dateFormat.format(chkModelDate);
-
-                                Intent intent = new Intent(MainActivity.this, item_information_typing.class);
-                                intent.putExtra("itemName", itemName);
-                                intent.putExtra("itemStorage", itemStorage);
-                                intent.putExtra("itemExpDate", itemExpDate);
-                                startActivity(intent);
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                // 예외 처리 로직 추가
-                            }
+//                            }
                         }
                     }
+                    if(itemClassId != -1) {
+                        setInputItemInfo(itemClassId);
+                    }
                 }
-            });
+        });
+
+
+
 
     }
 
@@ -264,15 +264,67 @@ public class MainActivity extends AppCompatActivity {
         return 0;
     }
 
-    public String matchClassId(int inputId) {
+    public void setInputItemInfo(int inputId) {
         if(exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().size() != 0) {
             ExpList ExpTuple = exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().first();
+            chkModelName = ExpTuple.getName();
 
-            modelSetItemStorage(ExpTuple);
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.popup_set_storage);
 
-            return ExpTuple.getName();
+            Button button1 = dialog.findViewById(R.id.button_info1);
+            Button button2 = dialog.findViewById(R.id.button_info2);
+            Button button3 = dialog.findViewById(R.id.button_info3);
+
+            String buttonText1 = ExpTuple.getStorage_info(0) +
+                    "\n보관 : " + (ExpTuple.getExp_info(0) == -1? "불가능" : ExpTuple.getExp_info(0) + "일");
+            String buttonText2 = ExpTuple.getStorage_info(1) +
+                    "\n보관 : " + (ExpTuple.getExp_info(1) == -1? "불가능" : ExpTuple.getExp_info(1) + "일");
+            String buttonText3 = ExpTuple.getStorage_info(2) +
+                    "\n보관 : " + (ExpTuple.getExp_info(2) == -1? "불가능" : ExpTuple.getExp_info(2) + "일");
+
+            button1.setText(buttonText1);
+            button2.setText(buttonText2);
+            button3.setText(buttonText3);
+
+
+            // 버튼추가
+            button1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showStorageDialog(0, ExpTuple);
+
+
+                }
+            });
+
+            button2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showStorageDialog(1, ExpTuple);
+                }
+            });
+
+            button3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showStorageDialog(2, ExpTuple);
+                }
+            });
+
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); // 전체 화면 크기로 설정
+            dialog.show();
         }
-        return null;
+
+
+    }
+
+    public void runModelIntent() {
+        Intent intent = new Intent(MainActivity.this, item_information_typing.class);
+        intent.putExtra("itemName", chkModelName);
+        intent.putExtra("itemStorage", chkModelStorage);
+        intent.putExtra("itemExpDate", chkModelDate);
+        startActivity(intent);
     }
 
     // DB에 정보 추가할 튜플 생성
@@ -456,83 +508,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void modelSetItemStorage(ExpList exptuple) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        String buttonText1 = exptuple.getStorage_info(0) +
-                "\n보관기간 : " + exptuple.getExp_info(0);
-        String buttonText2 = exptuple.getStorage_info(1) +
-                "\n보관기간 : " + exptuple.getExp_info(1);
-        String buttonText3 = exptuple.getStorage_info(2) +
-                "\n보관기간 : " + exptuple.getExp_info(2);
-
-        // 버튼추가
-        builder.setPositiveButton(buttonText1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showStorageDialog(0);
-                if (chkModelStorage != -1) {
-                    dialog.dismiss(); // 팝업 창 닫기
-                } else {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(new Date());
-                    calendar.add(Calendar.DATE, exptuple.getExp_info(0));
-                    chkModelDate = calendar.getTime();
-                }
-            }
-        });
-
-        builder.setNeutralButton(buttonText2, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showStorageDialog(1);
-                if (chkModelStorage != -1) {
-                    dialog.dismiss(); // 팝업 창 닫기
-                } else {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(new Date());
-                    calendar.add(Calendar.DATE, exptuple.getExp_info(1));
-                    chkModelDate = calendar.getTime();
-                }
-            }
-        });
-
-        builder.setNegativeButton(buttonText3, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                showStorageDialog(2);
-                if (chkModelStorage != -1) {
-                    dialog.dismiss(); // 팝업 창 닫기
-                } else {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(new Date());
-                    calendar.add(Calendar.DATE, exptuple.getExp_info(2));
-                    chkModelDate = calendar.getTime();
-                }
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-
-        // 팝업 창의 속성 설정
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.copyFrom(dialog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
-        dialog.show();
-        dialog.getWindow().setAttributes(layoutParams);
-    }
-
-    public void showStorageDialog(int num) {
+    public void showStorageDialog(int num, ExpList ExpTuple) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("보관방법 선택");
-        builder.setMessage(num == 0 ? "실온보관" : num == 1 ? "냉장보관" : "냉동보관" + "을 선택하시겠습니까?");
+        builder.setMessage((num == 0 ? "실온보관" : num == 1 ? "냉장보관" : "냉동보관") + "을 선택하시겠습니까?");
 
         //예 클릭 시
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 chkModelStorage = num;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, ExpTuple.getExp_info(chkModelStorage));
+                chkModelDate = calendar.getTime();;
+                runModelIntent();
             }
         });
         builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
