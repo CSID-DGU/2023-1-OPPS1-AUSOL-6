@@ -76,12 +76,32 @@ public class ItemList extends RealmObject {
                 storageText = "알 수 없음";
         }
 
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return "품목명 : " + item_name +
-                "\n보관 방법 : " + storageText +
+                "        보관 방법 : " + storageText +
                 "\n구매 일자 : " + dateFormat.format(input_date) +
-                "\n유통 기한 : " + dateFormat.format(expire_date);
+                "        D " + changeDateFormat(input_date) +
+                "\n유통 기한 : " + dateFormat.format(expire_date) +
+                "        D " + changeDateFormat(expire_date);
+    }
+
+    public String changeDateFormat(Date date) {
+
+        Date today = new Date();
+
+        if(today.after(date)) {
+            long diffMillis = (today.getTime() - date.getTime()) / (24 * 60 * 60 * 1000);
+            if(diffMillis == 0)
+                return "- day";
+
+            return "+ " + String.valueOf(diffMillis);
+        } else {
+            long diffMillis = (date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000);
+            if(diffMillis == 0)
+                return "- day";
+
+            return "- " + String.valueOf(diffMillis);
+        }
     }
 
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/layoutstroke">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableLeft="@drawable/normalsize"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:textSize="20sp"/>
+    <View
+        android:background="@drawable/dotline"
+        android:layout_width="match_parent"
+        android:layerType="software"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableLeft="@drawable/coldsize"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:textSize="20sp"/>
+    <View
+        android:background="@drawable/dotline"
+        android:layout_width="match_parent"
+        android:layerType="software"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_info3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableLeft="@drawable/freezesize"
+        android:background="@drawable/button_info_design"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:textSize="20sp"/>
+
+</LinearLayout>

@@ -1,7 +1,8 @@
 package com.example.keepfresh;
 
-import android.Manifest;
+import android.Manifest
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,8 +10,8 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private static Realm realm;
     private static Realm exp_realm;
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private ActivityMainBinding binding;
 
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private Bitmap capturedImage;
+    private int itemClassId = -1;
+    private String chkModelName;
+    private int chkModelStorage = -1;
+    private Date chkModelDate;
 
 
     @Override
@@ -119,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
             parsingItemInfo();
 
             // 테스트 튜플 추가 테스트
-            createTuple("사과", 1);
-            createTuple("바나나", 0);
-            createTuple("귤", 2);
-            createTuple("팽이버섯", 1);
+//            createTuple("사과", 1);
+//            createTuple("바나나", 0);
+//            createTuple("귤", 2);
+//            createTuple("팽이버섯", 1);
 
             MyApplication.initExp = true;
 
@@ -131,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         showResult();
+        chkLayout();
 
         // Test 이미지 확인용 view
         //ImageView imageView = findViewById(R.id.testImage);
@@ -143,30 +149,49 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         if (data != null) {
+                            /*******************************
+                             * TODO model 불러와지면 주석 제거 *
+                             *******************************/
                             capturedImage = (Bitmap) data.getExtras().get("data");
+ //                           try {
 
-                            // Test 이미지 확인용 코드
-                            //imageView.setImageBitmap(capturedImage);
+ //                               //triton 전송
+ //                               String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
+ //
+ //                               Log.i("modelr", String.valueOf(parsingModelResult(response)));
+ //                               // triton 결과 파싱(int)
+ //                               itemClassId = parsingModelResult(response);
+                            
+                                itemClassId = 10; // 테스트용 model 불러와지면 삭제
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
 
-                            // TODO 사진 입력시 모델로 전송 함수 실행
+//                            }
                         }
                     }
+                    if(itemClassId != -1) {
+                        setInputItemInfo(itemClassId);
+                    }
                 }
-            });
+        });
+
+
+
 
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
-    public void addExpList(String name, int recommend_storage, String[] storage_info, int[] exp_info){
+    public void addExpList(int item_num, String name, int recommend_storage, String[] storage_info, int[] exp_info){
 
         //이미 있으면 생성하지 않음
-        if(exp_realm.where(ExpList.class).equalTo("name", name).findAll().size() != 0)
+        if(exp_realm.where(ExpList.class).equalTo("item_num", item_num).findAll().size() != 0)
             return;
 
         exp_realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 ExpList expList = exp_realm.createObject(ExpList.class);
+                expList.setItem_num(item_num);
                 expList.setName(name);
                 expList.setRecommend_storage(recommend_storage);
                 for (int i = 0; i < 3; i++) {
@@ -186,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void parsingItemInfo(){
 
+        int item_num;
         String name;
         int recommendStore;
         String[] storageInfoArray = new String[3];
@@ -206,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    item_num = ((JSONObject) jsonObject).optInt("item_no");
                     name = ((JSONObject) jsonObject).optString("item_name");
                     recommendStore = jsonObject.optInt("recommend_store");
                     storageInfoArray[0] = jsonObject.optString("storage_info_0");
@@ -215,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                     expInfoArray[1] = jsonObject.optInt("exp_info_1");
                     expInfoArray[2] = jsonObject.optInt("exp_info_2");
 
-                    addExpList(name, recommendStore, storageInfoArray, expInfoArray);
+                    addExpList(item_num, name, recommendStore, storageInfoArray, expInfoArray);
 
                 }
             } catch (IOException | JSONException e) {
@@ -224,6 +251,88 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int parsingModelResult(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONArray resultArray = jsonObject.getJSONArray("result");
+            if (resultArray.length() > 0) {
+                return resultArray.getInt(0);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void setInputItemInfo(int inputId) {
+        if(exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().size() != 0) {
+            ExpList ExpTuple = exp_realm.where(ExpList.class).equalTo("item_num", inputId).findAll().first();
+            chkModelName = ExpTuple.getName();
+
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.popup_set_storage);
+
+            Button button1 = dialog.findViewById(R.id.button_info1);
+            Button button2 = dialog.findViewById(R.id.button_info2);
+            Button button3 = dialog.findViewById(R.id.button_info3);
+
+            String buttonText1 = ExpTuple.getStorage_info(0) +
+                    "\n보관 : " + (ExpTuple.getExp_info(0) == -1? "불가능" : ExpTuple.getExp_info(0) + "일");
+            String buttonText2 = ExpTuple.getStorage_info(1) +
+                    "\n보관 : " + (ExpTuple.getExp_info(1) == -1? "불가능" : ExpTuple.getExp_info(1) + "일");
+            String buttonText3 = ExpTuple.getStorage_info(2) +
+                    "\n보관 : " + (ExpTuple.getExp_info(2) == -1? "불가능" : ExpTuple.getExp_info(2) + "일");
+
+            button1.setText(buttonText1);
+            button2.setText(buttonText2);
+            button3.setText(buttonText3);
+
+
+            // 버튼추가
+            if(ExpTuple.getExp_info(0) > 0) {
+                button1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        showStorageDialog(0, ExpTuple);
+                    }
+
+                });
+            }
+
+            if(ExpTuple.getExp_info(1) > 0) {
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showStorageDialog(1, ExpTuple);
+                    }
+                });
+            }
+
+            if(ExpTuple.getExp_info(2) > 0) {
+                button3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showStorageDialog(2, ExpTuple);
+                    }
+                });
+            }
+
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT); // 전체 화면 크기로 설정
+            dialog.show();
+        }
+
+
+    }
+
+    public void runModelIntent() {
+        Intent intent = new Intent(MainActivity.this, item_information_typing.class);
+        intent.putExtra("itemName", chkModelName);
+        intent.putExtra("itemStorage", chkModelStorage);
+        intent.putExtra("itemExpDate", chkModelDate);
+        startActivity(intent);
     }
 
     // DB에 정보 추가할 튜플 생성
@@ -265,7 +374,6 @@ public class MainActivity extends AppCompatActivity {
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
 
-        Log.i("aaa", results.toString());
 
         results = results.sort("expire_date", Sort.ASCENDING);
 
@@ -368,10 +476,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void chkLayout() {
-        if(container == null) {
-            return;
-        }
-
         LinearLayout roomListLayout = findViewById(R.id.room_list);
         LinearLayout refriListLayout = findViewById(R.id.refri_list);
         LinearLayout freezeListLayout = findViewById(R.id.freeze_list);
@@ -409,6 +513,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    public void showStorageDialog(int num, ExpList ExpTuple) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("보관방법 선택");
+        builder.setMessage((num == 0 ? "실온보관" : num == 1 ? "냉장보관" : "냉동보관") + "을 선택하시겠습니까?");
+
+        //예 클릭 시
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                chkModelStorage = num;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, ExpTuple.getExp_info(chkModelStorage));
+                chkModelDate = calendar.getTime();
+                runModelIntent();
+            }
+        });
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                chkModelStorage = -1;
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     public static void clearData() {
