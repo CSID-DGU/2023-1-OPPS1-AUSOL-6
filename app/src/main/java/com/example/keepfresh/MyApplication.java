@@ -5,6 +5,7 @@ import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import androidx.preference.PreferenceManager;
 
@@ -76,7 +77,6 @@ public class MyApplication extends Application {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
-        Date dat = cal.getTime();
         // If the specified time has already passed, set the alarm for the next day
         if (cal.getTime().before(new Date())) {
             cal.add(Calendar.DAY_OF_MONTH, 1);

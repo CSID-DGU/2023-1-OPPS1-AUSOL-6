@@ -1,6 +1,7 @@
 package com.example.keepfresh;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -37,6 +39,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Stack;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -106,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
         btn_move.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this , setting_alarm.class);
-                startActivity(intent); //액티비티 이동
+                Intent intent = new Intent(MainActivity.this, SetAlert.class);
+                startActivity(intent);
             }
         });
 
