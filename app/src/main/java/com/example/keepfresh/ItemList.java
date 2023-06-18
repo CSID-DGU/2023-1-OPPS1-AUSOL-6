@@ -97,6 +97,9 @@ public class ItemList extends RealmObject {
             return "+ " + String.valueOf(diffMillis);
         } else {
             long diffMillis = (date.getTime() - today.getTime()) / (24 * 60 * 60 * 1000);
+            if(diffMillis == 0)
+                return "- day";
+
             return "- " + String.valueOf(diffMillis);
         }
     }
