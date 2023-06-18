@@ -1,7 +1,6 @@
 package com.example.keepfresh;
 
-import android.Manifest
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -40,7 +38,6 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Stack;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
