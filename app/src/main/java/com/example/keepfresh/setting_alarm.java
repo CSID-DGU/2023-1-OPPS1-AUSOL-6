@@ -1,14 +1,18 @@
 package com.example.keepfresh;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
+import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
+
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 
-import androidx.annotation.Nullable;
+import android.os.Bundle;
 
-//알람 설정 페이지
+import android.content.SharedPreferences;
+
+import com.example.keepfresh.R;
+
+//알람 설정 페이지 display
 public class setting_alarm extends PreferenceFragment {
     SharedPreferences prefs;
 
@@ -23,7 +27,7 @@ public class setting_alarm extends PreferenceFragment {
         datePreference = (ListPreference) findPreference("alert_date");
         timePreference = (ListPreference) findPreference("alert_time");
 
-        prefs= PreferenceManager.getDefaultSharedPreferences(getActivity());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         if(!prefs.getString("alert_date", "3일 전").equals("")){
             datePreference.setSummary(prefs.getString("alert_date", "3일 전"));

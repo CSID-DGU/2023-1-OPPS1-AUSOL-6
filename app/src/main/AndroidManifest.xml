@@ -7,7 +7,6 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.CAMERA"/>
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -22,13 +21,10 @@
         <activity
             android:name=".SetAlert"
             android:exported="true" >
-
         </activity>
         <activity
             android:name=".item_information_typing"
             android:exported="true" >
-
-
         </activity>
         <activity
             android:name=".MainActivity"
@@ -36,11 +32,16 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<receiver android:name=".AlertReceiver"/>-->
+        <receiver android:name=".AlertReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
