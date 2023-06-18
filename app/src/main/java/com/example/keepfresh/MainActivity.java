@@ -145,8 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
                             // Test 이미지 확인용 코드
                             //imageView.setImageBitmap(capturedImage);
-
-                            // TODO 사진 입력시 모델로 전송 함수 실행
+                            try {
+                                String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
+                                System.out.println("Response: " + response);
+                                // 응답 처리 로직 추가
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                // 예외 처리 로직 추가
+                            }
                         }
                     }
                 }
