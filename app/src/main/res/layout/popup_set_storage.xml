@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#00FF0000">
+    android:background="@drawable/layoutstroke">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_info1"
@@ -13,7 +13,13 @@
         android:drawableLeft="@drawable/normalsize"
         android:background="@drawable/button_info_design"
         android:textColor="@color/black"
-        android:textSize="24dp"/>
+        android:textAlignment="center"
+        android:textSize="20sp"/>
+    <View
+        android:background="@drawable/dotline"
+        android:layout_width="match_parent"
+        android:layerType="software"
+        android:layout_height="1dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_info2"
@@ -23,10 +29,13 @@
         android:drawableLeft="@drawable/coldsize"
         android:background="@drawable/button_info_design"
         android:textColor="@color/black"
-        android:textStyle="normal"
         android:textAlignment="center"
-        android:text="해감한 꼬막을 밀폐용기에 담아 냉동보관해주세요"
-        android:textSize="24dp"/>
+        android:textSize="20sp"/>
+    <View
+        android:background="@drawable/dotline"
+        android:layout_width="match_parent"
+        android:layerType="software"
+        android:layout_height="1dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_info3"
@@ -36,6 +45,7 @@
         android:drawableLeft="@drawable/freezesize"
         android:background="@drawable/button_info_design"
         android:textColor="@color/black"
-        android:textSize="24dp"/>
+        android:textAlignment="center"
+        android:textSize="20sp"/>
 
 </LinearLayout>
