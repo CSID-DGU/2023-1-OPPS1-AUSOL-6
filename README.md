@@ -101,6 +101,10 @@
 
 ![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/de896e06-3386-4c4c-abbf-37dcb97db60f)
 
+Training data set : [AIHub - 건강관리를 위한 음식 이미지](https://www.aihub.or.kr/unitysearch/list.do?kwd=%EA%B1%B4%EA%B0%95%EA%B4%80%EB%A6%AC%EB%A5%BC+%EC%9C%84%ED%95%9C+%EC%9D%8C%EC%8B%9D+%EC%9D%B4%EB%AF%B8%EC%A7%80)
+
+<br/>
+
 ## 모델 서빙 결과
 
 ![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/d8fdab3a-5b73-46a3-97f2-696df08e0da4)
