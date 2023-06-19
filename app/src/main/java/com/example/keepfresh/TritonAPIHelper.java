@@ -41,25 +41,26 @@ public class TritonAPIHelper {
         // Triton 서버의 엔드포인트 URL
         String tritonUrl = "http://13.237.155.43/predict";
 
+        // OkHttpClient 생성
+        OkHttpClient client = new OkHttpClient();
+
         // Bitmap을 ByteArray로 변환
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 
-        // OkHttpClient 생성
-        OkHttpClient client = new OkHttpClient();
-
-        // 사진 파일을 RequestBody에 추가
+        // POST 요청 생성
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("image", "photo.jpg", RequestBody.create(byteArray, MediaType.parse("image/jpeg")))
+                .addFormDataPart("file", "photo.jpg", RequestBody.create(byteArray, MediaType.parse("multipart/form-data")))
                 .build();
 
-        // POST 요청 생성
         Request request = new Request.Builder()
                 .url(tritonUrl)
                 .post(requestBody)
                 .build();
+
+        Log.i("imim", request.body().toString());
 
         // 요청 실행 및 응답 처리
         try (Response response = client.newCall(request).execute()) {
@@ -70,5 +71,6 @@ public class TritonAPIHelper {
             return response.body().string();
         }
     }
+
 
 }

@@ -9,7 +9,6 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -141,50 +140,41 @@ public class MainActivity extends AppCompatActivity {
 
         // 카메라 촬영 이후 동작
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            /*******************************
-                             * TODO model 불러와지면 주석 제거 *
-                             *******************************/
-                            capturedImage = (Bitmap) data.getExtras().get("data");
-                            try {
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null) {
+                                capturedImage = (Bitmap) data.getExtras().get("data");
+                                try {
+                                    TritonAPIHelper.sendPhotoToTritonAsync(capturedImage, new TritonAPIHelper.Callback() {
+                                        @Override
+                                        public void onSuccess(String response) {
+                                            itemClassId = parsingModelResult(response);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (itemClassId != -1) {
+                                                        setInputItemInfo(itemClassId);
+                                                    }
+                                                }
+                                            });
+                                        }
 
-                                //triton 전송
-                                TritonAPIHelper.sendPhotoToTritonAsync(capturedImage, new TritonAPIHelper.Callback() {
-                                    @Override
-                                    public void onSuccess(String response) {
-                                        // 성공 처리
-                                        itemClassId = parsingModelResult(response);
-                                        Log.i("tetete",response);
-                                    }
+                                        @Override
+                                        public void onError(IOException e) {
+                                            // 오류 처리
+                                        }
+                                    });
 
-                                    @Override
-                                    public void onError(IOException e) {
-                                        // 오류 처리
-                                        Log.i("tetete",e.toString());
-                                    }
-                                });
-
-  //                              Log.i("tetete", String.valueOf(parsingModelResult(response)));
-                                // triton 결과 파싱(int)
-   //                             itemClassId = parsingModelResult(response);
-
-  //                              itemClassId = 10; // 테스트용 model 불러와지면 삭제
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         }
                     }
-                    if(itemClassId != -1) {
-                        setInputItemInfo(itemClassId);
-                    }
-                }
-        });
-
+                });
 
 
 
@@ -554,6 +544,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
 
     public static void clearData() {
         realm.executeTransaction(new Realm.Transaction() {
