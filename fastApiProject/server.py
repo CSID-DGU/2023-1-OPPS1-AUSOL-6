@@ -33,7 +33,7 @@ async def runPredict(image_path):
 def getResults(results):
     result = []
     if (results is None):
-        return {"result" : "none"}
+        return {"result" : "-1"}
     else:
         for line in results.split("\n"):
             index = line.find(" ")
