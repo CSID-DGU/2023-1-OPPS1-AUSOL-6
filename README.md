@@ -1,3 +1,4 @@
+![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=300&section=header&text=Keep%20Fresh&fontSize=90&)
 # 2023-1-OPPS1-AUSOL-6
 2023년 1학기 공개SW프로젝트_01 아우솔 6조
 <br/><br/>
@@ -29,6 +30,7 @@
 |2018110571|전은규 [@EunkyuJeon](https://github.com/Eunkyu-Jeon)|컴퓨터공학전공|Backend, 모델서빙|
 <br/>
 
+<img src="https://img.shields.io/badge/Android Studio-CC6699?style=flat-square&logo=Android Studio&logoColor=#3DDC84"/> 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## 기존 프로젝트 분석
