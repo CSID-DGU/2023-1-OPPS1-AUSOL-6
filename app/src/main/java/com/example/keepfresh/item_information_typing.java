@@ -57,7 +57,7 @@ public class item_information_typing extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_information_typing);
 
@@ -140,13 +140,20 @@ public class item_information_typing extends AppCompatActivity {
 
                 if(isTupleCreated) {
                     Intent intent = new Intent(item_information_typing.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent); //액티비티 이동
                 }
             }
         });
-
     }
 
+    @Override
+    public void onBackPressed() {
+        // 메인 화면으로 돌아가는 코드
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
 
     public void createTuple(final String name, final int storage, final Date selectedDate){
 
