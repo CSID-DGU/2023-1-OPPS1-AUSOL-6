@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private String chkModelName;
     private int chkModelStorage = -1;
     private Date chkModelDate;
+
+    private boolean doubleBackToExitPressedOnce = false;
 
 
     @Override
@@ -160,6 +164,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "한 번 더 뒤로가기 버튼을 누르면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
+
+        new CountDownTimer(2000, 2000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // 아무것도 수행하지 않음
+            }
+
+            @Override
+            public void onFinish() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }.start();
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
@@ -478,7 +504,6 @@ public class MainActivity extends AppCompatActivity {
 
         //예 클릭 시
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 chkModelStorage = num;
