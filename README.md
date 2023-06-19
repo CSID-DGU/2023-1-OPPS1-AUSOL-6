@@ -86,6 +86,26 @@
      
 <br/>
 
+## 모델 학습 결과
+  
+![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/0f32fc28-cf74-4457-ad38-736839196cc0)
+
+![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/de896e06-3386-4c4c-abbf-37dcb97db60f)
+
+## 모델 서빙 결과
+
+![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/d8fdab3a-5b73-46a3-97f2-696df08e0da4)
+
+![image](https://github.com/CSID-DGU/2023-1-OSSP1-AUSOL-6/assets/24996261/daabedfc-de2e-4406-a3c3-919b7d306292)
+
+
+<br/>
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+### 기대 효과
+  - 식품별로 적합한 추천 보관방법 및 유통기한을 제공하여 식품 관리에 용이
+  - 구매한 식품을 직접 기록하지 않아도 사진 한 장으로 간단하게 식품 정보를 등록 가능하고 직접 등록, 수정, 삭제를 가능하게 한 사용자 편의성 증가
+  - 유통기한을 체계적으로 관리하여 버려지는 음식물 최소화
+    - 유통기한의 만료 시기를 알림을 통해 알려줌
+    - 보관한 음식이 상할 때까지 방치되는 것을 방지
