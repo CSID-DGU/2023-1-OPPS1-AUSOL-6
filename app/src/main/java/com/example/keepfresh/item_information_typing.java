@@ -113,8 +113,9 @@ public class item_information_typing extends AppCompatActivity {
         cancel_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(item_information_typing.this , MainActivity.class);
-                startActivity(intent); // 액티비티 이동
+                Intent intent = new Intent(item_information_typing.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent); //액티비티 이동
             }
         });
 
