@@ -25,8 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.keepfresh.databinding.ActivityMainBinding;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,14 +45,11 @@ import io.realm.Sort;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
-    private static final int REQUEST_IMAGE = 101;
 
     private static Realm realm;
     private static Realm exp_realm;
     SimpleDateFormat idFormat = new SimpleDateFormat("yyyyMMddHHmmss");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    private ActivityMainBinding binding;
 
     private LinearLayout container;
 
@@ -120,64 +115,51 @@ public class MainActivity extends AppCompatActivity {
             // .json파일의 정보를 읽어서 ExpList 테이블 생성
             parsingItemInfo();
 
-            // 테스트 튜플 추가 테스트
-//            createTuple("사과", 1);
-//            createTuple("바나나", 0);
-//            createTuple("귤", 2);
-//            createTuple("팽이버섯", 1);
-
             MyApplication.initExp = true;
-
-            // Test 실행시마다 튜플 추가하기 때문에 지워주기
-            // clearData();
         }
 
         showResult();
         chkLayout();
 
-        // Test 이미지 확인용 view
-        //ImageView imageView = findViewById(R.id.testImage);
-
         // 카메라 촬영 이후 동작
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent data = result.getData();
-                            if (data != null) {
-                                capturedImage = (Bitmap) data.getExtras().get("data");
-                                try {
-                                    TritonAPIHelper.sendPhotoToTritonAsync(capturedImage, new TritonAPIHelper.Callback() {
+        new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        capturedImage = (Bitmap) data.getExtras().get("data");
+                        try {
+                            ModelServer.sendPhotoToServer(capturedImage, new ModelServer.Callback() {
+                                @Override
+                                public void onSuccess(String response) {
+                                    itemClassId = parsingModelResult(response);
+                                    runOnUiThread(new Runnable() {
                                         @Override
-                                        public void onSuccess(String response) {
-                                            itemClassId = parsingModelResult(response);
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (itemClassId != -1) {
-                                                        setInputItemInfo(itemClassId);
-                                                    }
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void onError(IOException e) {
-                                            // 오류 처리
+                                        public void run() {
+                                            if (itemClassId != -1) {
+                                                setInputItemInfo(itemClassId);
+                                            } else {
+                                                noDetectionsAlert();
+                                            }
                                         }
                                     });
-
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
                                 }
-                            }
+
+                                @Override
+                                public void onError(IOException e) {
+                                    // 오류 처리
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
                     }
-                });
-
-
-
+                }
+            }
+        });
     }
 
     // expList에 정보 넣기 위한 포맷 설정(모델에서 인식할 클래스에 대한 유통기한)
@@ -257,14 +239,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
             JSONArray resultArray = jsonObject.getJSONArray("result");
-            if (resultArray.length() > 0) {
+            if (resultArray.length() >= 0) {
                 return resultArray.getInt(0);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        return 0;
+        return -1;
     }
 
     public void setInputItemInfo(int inputId) {
@@ -295,10 +277,7 @@ public class MainActivity extends AppCompatActivity {
             if(ExpTuple.getExp_info(0) > 0) {
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-
-                        showStorageDialog(0, ExpTuple);
-                    }
+                    public void onClick(View v) { showStorageDialog(0, ExpTuple); }
 
                 });
             }
@@ -336,49 +315,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // DB에 정보 추가할 튜플 생성
-    // 모델 이용한 유통기한 추가
-    public void createTuple(final String name, final int storage){
+    public void noDetectionsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("인식할 수 없는 물체입니다.");
 
-        realm.executeTransaction(new Realm.Transaction() {
+        builder.setPositiveButton("닫기", new DialogInterface.OnClickListener() {
             @Override
-            public void execute(Realm realm) {
-                ItemList itemList = realm.createObject(ItemList.class);
+            public void onClick(DialogInterface dialog, int which) {
 
-                /*******input_date 설정*******/
-                itemList.setInputDate(new Date());
-
-                /*******name 설정*******/
-                itemList.setName(name);
-
-                /*******storage 설정*******/
-                itemList.setStorage(storage);
-
-                /*******id 설정*******/
-                // 시간 + 저장방법
-                String id = idFormat.format(itemList.getInputDate()) + String.valueOf(itemList.getStorage());
-                itemList.setId(id);
-
-                //나머지 data는 expList table을 참고해서 설정함
-                ExpList expList = exp_realm.where(ExpList.class).equalTo("name", name).findAll().first();
-
-                /*******expire_date 설정*******/
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(itemList.getInputDate());
-                calendar.add(Calendar.DATE, expList.getExp_info(storage));
-                itemList.setExpireDate(calendar.getTime());
             }
         });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     // ItemList에 저장된 식품정보 불러오기
     private void showResult(){
         RealmResults<ItemList> results = realm.where(ItemList.class).findAll();
 
-
         results = results.sort("expire_date", Sort.ASCENDING);
-
-
 
         for(ItemList data : results){
 
@@ -546,6 +501,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // 렐름 정보 초기화 함수
     public static void clearData() {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
