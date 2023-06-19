@@ -3,7 +3,7 @@
     <!--식품보관 방법 리스트-->
     <string-array name="보관방법">
         <item>선택하기</item>
-        <item>실온보관</item>
+        <item>상온보관</item>
         <item>냉장보관</item>
         <item>냉동보관</item>
 

@@ -474,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
     public void showStorageDialog(int num, ExpList ExpTuple) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("보관방법 선택");
-        builder.setMessage((num == 0 ? "실온보관" : num == 1 ? "냉장보관" : "냉동보관") + "을 선택하시겠습니까?");
+        builder.setMessage((num == 0 ? "상온보관" : num == 1 ? "냉장보관" : "냉동보관") + "을 선택하시겠습니까?");
 
         //예 클릭 시
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {

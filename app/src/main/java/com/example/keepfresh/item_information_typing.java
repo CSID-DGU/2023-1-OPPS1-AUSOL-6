@@ -126,7 +126,7 @@ public class item_information_typing extends AppCompatActivity {
 
                 String selectedStorageText = spinner.getSelectedItem().toString();
 
-                if(selectedStorageText.equals("실온보관")) {
+                if(selectedStorageText.equals("상온보관")) {
                     selectedStorage = 0;
                 } else if(selectedStorageText.equals("냉장보관")) {
                     selectedStorage = 1;
