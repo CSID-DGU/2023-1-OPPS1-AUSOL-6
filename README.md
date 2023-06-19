@@ -53,7 +53,21 @@
 <br/>
 
 ## 실행화면
-https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/issues/39 https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/issues/40
+![KakaoTalk_20230619_112850258](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/22717661-91de-4ed1-9e07-e4df5c738020) ![KakaoTalk_20230619_112850258_01](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/9dab4c27-64dd-48b1-89ec-2a29eb65676c)
+
+앱에서 사진을 촬영하면 모델 서버에 사진을 보내고, 서버에서는 식품 객체를 인식해 그의 클래스 번호를 앱으로 불러온다.
+불러온 클래스 번호에 따라 보관 방법을 제시하고 유통기한과 보관 팁을 알려준다.
+
+![KakaoTalk_20230619_112850258_03](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/a123f31d-e477-43dd-81ec-2e122628a015) ![KakaoTalk_20230619_112850258_04](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/1e63d587-b105-4235-be5a-e3f275bd68c7)
+
+보관 방법을 선택하면 저장 항목에 선택한 내용이 자동으로 입력된다.
+
+![KakaoTalk_20230619_113110063](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/15aea568-8443-4596-8668-9c38384d42c2) ![KakaoTalk_20230619_112850258_01](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/d4f7d323-8e70-4013-a861-92aebed83a9d) ![KakaoTalk_20230619_112703623](https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/assets/126742414/1e540110-2973-4429-9006-20a3c7300581)
+
+사진 촬영 없이 직접 정보를 입력할 수도 있다. 입력한 정보는 사진 촬영할 때와 똑같이 리스트에 저장된다.
+
+
+
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
