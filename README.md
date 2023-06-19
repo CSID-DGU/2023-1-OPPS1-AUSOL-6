@@ -53,7 +53,7 @@
 <br/>
 
 ## 실행화면
-
+https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/issues/39 https://github.com/CSID-DGU/2023-1-OPPS1-AUSOL-6/issues/40
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
