@@ -119,8 +119,6 @@ public class item_information_typing extends AppCompatActivity {
         });
 
         submit_btn.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
             public void onClick(View v) {
                 String nameText = itemEditText.getText().toString();
