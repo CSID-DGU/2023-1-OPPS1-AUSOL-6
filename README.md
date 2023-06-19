@@ -1,5 +1,5 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=gradient&height=300&section=header&text=Keep%20Fresh&fontSize=90&)
-# 2023-1-OPPS1-AUSOL-6
+# 2023-1-OSSP1-AUSOL-6
 2023년 1학기 공개SW프로젝트_01 아우솔 6조
 <br/><br/>
 
