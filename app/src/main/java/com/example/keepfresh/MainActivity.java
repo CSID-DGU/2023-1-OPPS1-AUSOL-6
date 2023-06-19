@@ -1,7 +1,6 @@
 package com.example.keepfresh;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +24,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.keepfresh.databinding.ActivityMainBinding;
 
@@ -40,7 +38,6 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Stack;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -143,38 +140,41 @@ public class MainActivity extends AppCompatActivity {
 
         // 카메라 촬영 이후 동작
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            /*******************************
-                             * TODO model 불러와지면 주석 제거 *
-                             *******************************/
-                            capturedImage = (Bitmap) data.getExtras().get("data");
- //                           try {
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null) {
+                                capturedImage = (Bitmap) data.getExtras().get("data");
+                                try {
+                                    TritonAPIHelper.sendPhotoToTritonAsync(capturedImage, new TritonAPIHelper.Callback() {
+                                        @Override
+                                        public void onSuccess(String response) {
+                                            itemClassId = parsingModelResult(response);
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    if (itemClassId != -1) {
+                                                        setInputItemInfo(itemClassId);
+                                                    }
+                                                }
+                                            });
+                                        }
 
- //                               //triton 전송
- //                               String response = TritonAPIHelper.sendPhotoToTriton(capturedImage);
- //
- //                               Log.i("modelr", String.valueOf(parsingModelResult(response)));
- //                               // triton 결과 파싱(int)
- //                               itemClassId = parsingModelResult(response);
-                            
-                                itemClassId = 10; // 테스트용 model 불러와지면 삭제
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
+                                        @Override
+                                        public void onError(IOException e) {
+                                            // 오류 처리
+                                        }
+                                    });
 
-//                            }
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
                         }
                     }
-                    if(itemClassId != -1) {
-                        setInputItemInfo(itemClassId);
-                    }
-                }
-        });
-
+                });
 
 
 
@@ -263,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return 0;
     }
 
@@ -543,6 +544,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
 
     public static void clearData() {
         realm.executeTransaction(new Realm.Transaction() {
