@@ -22,18 +22,30 @@ async def predict(file: UploadFile = File(...)):
     result = getResults(results)
     return result
 
+#predict test
+@app.post("/predict2")
+async def predict(file: bytes = File(...)):
+    # 요청 데이터 출력
+    try:
+        file_str = file.decode('utf-8')
+    except UnicodeDecodeError:
+        file_str = file.decode('latin-1')
+    print(f"Request Data:\n{file_str}")
+    image = Image.open(io.BytesIO(file))
+    print(image.show())
+    # 파싱 및 처리 로직 작성
+    # ...
 
+    return {"message": "Request processed successfully"}
 async def runPredict(image_path):
-    yolo_command = "yolo task=detect mode=predict model='./model/finalModel.pt' " \
-                   "show=True conf=0.1 source='{}' save_txt=True"\
-                    .format(image_path)
+    yolo_command = "yolo task=detect mode=predict model='./model/finalModel.pt' show=True conf=0.4 source='{}' save_txt=True".format(image_path)
     os.system(yolo_command)
 
 
 def getResults(results):
     result = []
     if (results is None):
-        return '{"result" : "none"}'
+        return {"result" : "-1" }
     else:
         for line in results.split("\n"):
             index = line.find(" ")
