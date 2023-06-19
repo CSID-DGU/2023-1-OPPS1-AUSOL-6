@@ -30,7 +30,7 @@
 |2018110571|전은규 [@EunkyuJeon](https://github.com/Eunkyu-Jeon)|컴퓨터공학전공|Backend, 모델서빙|
 <br/>
 
-<img src="https://img.shields.io/badge/Android Studio-CC6699?style=flat-square&logo=Android Studio&logoColor=#3DDC84"/> 
+<img src="https://img.shields.io/badge/Android Studio-CC6699?style=flat-square&logo=Android Studio&logoColor=#3DD384"/> <img src="https://img.shields.io/badge/Realm-09D3AC9?style=flat-square&logo=Realm&logoColor=#39477F"/> <img src="https://img.shields.io/badge/Pycharm-EE4C2C?style=flat-square&logo=pycharm&logoColor=#ffffff"/>
 - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ## 기존 프로젝트 분석
